@@ -12,6 +12,7 @@ This module is available for download from the [PowerShell Gallery](https://www.
 - [ ] Execution block with Expiring Cache Cmdlet
 - [ ] Custom and Extensible Prompt
 - [ ] Window Title Cmdlets
-- [ ] Window Management Cmdlets
+- [ ] Window Transparency Cmdlet
+- [ ] Window Resizing Cmdlet
 
 Additional features will be added over time
