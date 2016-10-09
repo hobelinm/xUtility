@@ -7,6 +7,9 @@
     - Allows for quick select of the path
     - Path segments are apart by hightlighted separators
     - Red/Green prompt shows whether the previous operation succeeded or not
+
+.NOTES
+    - TODO: Add support for additional messages on the prompt
 #>
 
 function Prompt
