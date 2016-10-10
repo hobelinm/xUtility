@@ -5,4 +5,4 @@ Get-ChildItem -Filter '*.ps1' -Recurse -Path $mainFolder | ForEach-Object {
     . $moduleScript
 }
 
-Write-Host "PsxUtility for PowerShell module loaded"
+Write-Verbose "xUtility module is now loaded"
