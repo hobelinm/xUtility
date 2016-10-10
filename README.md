@@ -14,8 +14,9 @@ This module is available for download from the [PowerShell Gallery](https://www.
 - [ ] Window Title Cmdlets
 - [ ] Window Transparency Cmdlet
 - [ ] Window Resizing Cmdlet
+- [ ] Admin Detection and Elevation
 
-
+## How to get it:
 - [xUtility in the PowerShell Gallery](https://www.powershellgallery.com/packages/xUtility)
 - [xUtility in the NPM Registry](https://www.npmjs.com/package/ps-xUtility)
 
