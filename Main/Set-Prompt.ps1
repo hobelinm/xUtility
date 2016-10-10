@@ -12,7 +12,7 @@
     - TODO: Add support for additional messages on the prompt
 #>
 
-function Prompt
+function Set-Prompt
 {
     [CmdletBinding()]
     param(
@@ -37,3 +37,5 @@ function Prompt
 
     "> "
 }
+
+Set-Alias Prompt Set-Prompt
