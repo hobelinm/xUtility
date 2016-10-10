@@ -17,7 +17,7 @@ This module is available for download from the [PowerShell Gallery](https://www.
 - [ ] Admin Detection and Elevation
 
 ## How to get it:
-- [xUtility in the PowerShell Gallery](https://www.powershellgallery.com/packages/xUtility)
-- [xUtility in the NPM Registry](https://www.npmjs.com/package/ps-xutilities)
+- [xUtility in the PowerShell Gallery](https://www.powershellgallery.com/packages/xUtility). Follow instructions on page
+- [xUtility in the NPM Registry](https://www.npmjs.com/package/ps-xutilities) via `PsModuleRegister` also found on [NPM](https://www.npmjs.com/package/psmoduleregister)
 
 Additional features will be added over time
