@@ -40,8 +40,7 @@ new sessions, their prompt will also include this definition
 
 #>
 
-function Set-Prompt
-{
+function Set-Prompt {
     [CmdletBinding(DefaultParameterSetName = "None")]
     param(
         [Parameter(ParameterSetName = "Extended")]
