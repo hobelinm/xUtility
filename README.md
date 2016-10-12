@@ -17,11 +17,19 @@ This module is available for download from the [PowerShell Gallery](https://www.
 - [ ] Admin Detection and Elevation
 
 ## How to get it:
-- [xUtility in the PowerShell Gallery](https://www.powershellgallery.com/packages/xUtility). Follow instructions on page
+- [xUtility in the PowerShell Gallery](https://www.powershellgallery.com/packages/xUtility)
+
+`PS> Install-Module -Name xUtility`<br>
+`PS> Import-Module -Name xUtility`
+
 - [xUtility in the NPM Registry](https://www.npmjs.com/package/ps-xutilities) via `PsModuleRegister` also found on [NPM](https://www.npmjs.com/package/psmoduleregister)
 
+`PS> npm install -g psmoduleregister`<br>
+`PS> psmoduleregister --install ps-xutilities`<br>
+`PS> Import-Module -Name xUtility`
+
 ## TO DO Items:
-- Wrap Out-File calls in the new retry policy cmdlet (Set-Prompt, Set-Title)
+- Wrap Out-File calls in the new retry policy cmdlet (Set-Prompt, Set-Title, Set-ConsoleTransparency)
 - Implement remaining utilities
 
 Additional features will be added over time
