@@ -102,8 +102,7 @@ Set-Alias Prompt Set-Prompt
 
 # Initialization code
 $Script:extendedPrompt = $null
-$Script:localSetPromptPath = Join-Path -Path $env:LOCALAPPDATA -ChildPath "xUtility"
-$Script:localSetPromptPath = Join-Path -Path $Script:localSetPromptPath -ChildPath "Set-Prompt"
+$Script:localSetPromptPath = Join-Path -Path $Script:moduleWorkPath -ChildPath "Set-Prompt"
 
 if (-not (Test-Path $Script:localSetPromptPath)) {
     New-Item -ItemType 'Directory' -Path $Script:localSetPromptPath | Write-Verbose

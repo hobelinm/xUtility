@@ -53,8 +53,7 @@ function Set-Title {
 }
 
 # Script initialization
-$Script:localSetTitlePath = Join-Path -Path $env:LOCALAPPDATA -ChildPath "xUtility"
-$Script:localSetTitlePath = Join-Path -Path $Script:localSetTitlePath -ChildPath "Set-Title"
+$Script:localSetTitlePath = Join-Path -Path $Script:moduleWorkPath -ChildPath "Set-Title"
 
 if (-not (Test-Path $Script:localSetTitlePath)) {
     New-Item -ItemType 'Directory' -Path $Script:localSetTitlePath | Write-Verbose
