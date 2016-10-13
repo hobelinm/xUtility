@@ -18,3 +18,5 @@ function Test-AdminRights {
     $userPrincipal = [Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()
     Write-Output $userPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
+
+Set-Alias IsAdmin Test-AdminRights

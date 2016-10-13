@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-**`v1.0.4`**
+**`v1.0.5`**
 
 ## What is PsxUtility?
 PxsUtility is a project for creating extended Utilities for PowerShell wrapping common functionality on `xUtility` module. 
@@ -14,7 +14,7 @@ This module is available for download from the [PowerShell Gallery](https://www.
 - [x] Window Title Cmdlets
 - [x] Window Transparency Cmdlet
 - [ ] Window Resizing Cmdlet
-- [ ] Admin Detection and Elevation
+- [x] Admin Detection and Elevation
 
 ## How to get it:
 - [xUtility in the PowerShell Gallery](https://www.powershellgallery.com/packages/xUtility)
