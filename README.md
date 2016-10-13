@@ -15,6 +15,8 @@ This module is available for download from the [PowerShell Gallery](https://www.
 - [x] Window Transparency Cmdlet
 - [ ] Window Resizing Cmdlet
 - [x] Admin Detection and Elevation
+- [ ] Enable symbolic link behavior
+- [ ] Automatic module updates, Additional Package Manager(?)
 
 ## How to get it:
 - [xUtility in the PowerShell Gallery](https://www.powershellgallery.com/packages/xUtility)
