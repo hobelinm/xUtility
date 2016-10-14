@@ -1,5 +1,6 @@
 # Global variables
-$Script:moduleWorkPath = Join-Path -Path $env:LOCALAPPDATA -ChildPath "xUtility"
+$script:moduleWorkPath = Join-Path -Path $env:LOCALAPPDATA -ChildPath "xUtility"
+$script:expiringCacheObjects = @{}
 
 # Load all cmdlets
 $mainFolder = Join-Path -Path $PSScriptRoot -ChildPath "Main"

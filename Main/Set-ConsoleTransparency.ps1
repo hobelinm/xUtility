@@ -46,13 +46,13 @@ function Set-ConsoleTransparency {
     if ($Off) {
         $Level = 255
         if ($Persist) {
-            Remove-Item $Script:localSetConsoleTransparencyConfig
+            Remove-Item $script:localSetConsoleTransparencyConfig
         }
     }
 
     if ($Persist -and -not $Off) {
         $config = [PSCustomObject] @{ Level = $Level }
-        $config | ConvertTo-Json -Compress | Out-File $Script:localSetConsoleTransparencyConfig
+        $config | ConvertTo-Json -Compress | Out-File $script:localSetConsoleTransparencyConfig
     }
 
     $hwnd = (Get-Process -Id $PID).MainWindowHandle
@@ -93,15 +93,15 @@ namespace xUtilityTransparency
 "@
 
 # Initialization code
-$Script:localSetConsoleTransparencyPath = Join-Path -Path $Script:moduleWorkPath -ChildPath "Set-ConsoleTransparency"
+$script:localSetConsoleTransparencyPath = Join-Path -Path $script:moduleWorkPath -ChildPath "Set-ConsoleTransparency"
 
-if (-not (Test-Path $Script:localSetConsoleTransparencyPath)) {
-    New-Item -ItemType 'Directory' -Path $Script:localSetConsoleTransparencyPath | Write-Verbose
+if (-not (Test-Path $script:localSetConsoleTransparencyPath)) {
+    New-Item -ItemType 'Directory' -Path $script:localSetConsoleTransparencyPath | Write-Verbose
 }
 
-$Script:localSetConsoleTransparencyConfig = Join-Path -Path $Script:localSetConsoleTransparencyPath -ChildPath "config.json"
-if ((Test-Path $Script:localSetConsoleTransparencyConfig)) {
-    $transparencyConfig = (Get-Content $Script:localSetConsoleTransparencyConfig) | Out-String | ConvertFrom-Json
+$script:localSetConsoleTransparencyConfig = Join-Path -Path $script:localSetConsoleTransparencyPath -ChildPath "config.json"
+if ((Test-Path $script:localSetConsoleTransparencyConfig)) {
+    $transparencyConfig = (Get-Content $script:localSetConsoleTransparencyConfig) | Out-String | ConvertFrom-Json
 
     $hwnd = (Get-Process -Id $PID).MainWindowHandle
     [xUtilityTransparency.Win32Methods]::SetWindowTransparent($hwnd, $transparencyConfig.Level)

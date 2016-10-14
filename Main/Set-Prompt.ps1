@@ -59,26 +59,26 @@ function Set-Prompt {
 
     $lastOperationSucceeded = $?
     if ($Callback -ne $null) {
-        $Script:extendedPrompt = $Callback
+        $script:extendedPrompt = $Callback
         if ($Persist) {
             # Write Callback to disk
-            $Callback.ToString() | Out-File $Script:localSetPromptCallback
+            $Callback.ToString() | Out-File $script:localSetPromptCallback
         }
 
         return
     }
 
     if ($ClearCallback) {
-        $Script:extendedPrompt = $null
-        if ((Test-Path -Path $Script:localSetPromptCallback)) {
-            Remove-Item $Script:localSetPromptCallback
+        $script:extendedPrompt = $null
+        if ((Test-Path -Path $script:localSetPromptCallback)) {
+            Remove-Item $script:localSetPromptCallback
         }
 
         return
     }
 
-    if ($Script:extendedPrompt -ne $null) {
-        . $Script:extendedPrompt
+    if ($script:extendedPrompt -ne $null) {
+        . $script:extendedPrompt
     }
 
     Write-Host "[ " -ForegroundColor Cyan -NoNewLine
@@ -101,15 +101,15 @@ function Set-Prompt {
 Set-Alias Prompt Set-Prompt
 
 # Initialization code
-$Script:extendedPrompt = $null
-$Script:localSetPromptPath = Join-Path -Path $Script:moduleWorkPath -ChildPath "Set-Prompt"
+$script:extendedPrompt = $null
+$script:localSetPromptPath = Join-Path -Path $script:moduleWorkPath -ChildPath "Set-Prompt"
 
-if (-not (Test-Path $Script:localSetPromptPath)) {
-    New-Item -ItemType 'Directory' -Path $Script:localSetPromptPath | Write-Verbose
+if (-not (Test-Path $script:localSetPromptPath)) {
+    New-Item -ItemType 'Directory' -Path $script:localSetPromptPath | Write-Verbose
 }
 
-$Script:localSetPromptCallback = Join-Path -Path $Script:localSetPromptPath -ChildPath "callback.txt"
-if ((Test-Path $Script:localSetPromptCallback)) {
-    $callbackFile = Get-Content $Script:localSetPromptCallback
-    $Script:extendedPrompt = [ScriptBlock]::Create($callbackFile)
+$script:localSetPromptCallback = Join-Path -Path $script:localSetPromptPath -ChildPath "callback.txt"
+if ((Test-Path $script:localSetPromptCallback)) {
+    $callbackFile = Get-Content $script:localSetPromptCallback
+    $script:extendedPrompt = [ScriptBlock]::Create($callbackFile)
 }

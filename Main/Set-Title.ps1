@@ -39,8 +39,8 @@ function Set-Title {
         )
 
     if ($NoDefault) {
-        if ((Test-Path $Script:localSetTitleMessage)) {
-            Remove-Item $Script:localSetTitleMessage
+        if ((Test-Path $script:localSetTitleMessage)) {
+            Remove-Item $script:localSetTitleMessage
         }
 
         return
@@ -48,18 +48,18 @@ function Set-Title {
 
     $host.UI.RawUI.WindowTitle = $Message
     if ($Persist) {
-        $Message | Out-File $Script:localSetTitleMessage
+        $Message | Out-File $script:localSetTitleMessage
     }
 }
 
 # Script initialization
-$Script:localSetTitlePath = Join-Path -Path $Script:moduleWorkPath -ChildPath "Set-Title"
+$script:localSetTitlePath = Join-Path -Path $script:moduleWorkPath -ChildPath "Set-Title"
 
-if (-not (Test-Path $Script:localSetTitlePath)) {
-    New-Item -ItemType 'Directory' -Path $Script:localSetTitlePath | Write-Verbose
+if (-not (Test-Path $script:localSetTitlePath)) {
+    New-Item -ItemType 'Directory' -Path $script:localSetTitlePath | Write-Verbose
 }
 
-$Script:localSetTitleMessage = Join-Path -Path $Script:localSetTitlePath -ChildPath "title.txt"
-if ((Test-Path $Script:localSetTitleMessage)) {
-    $host.UI.RawUI.WindowTitle = Get-Content $Script:localSetTitleMessage
+$script:localSetTitleMessage = Join-Path -Path $script:localSetTitlePath -ChildPath "title.txt"
+if ((Test-Path $script:localSetTitleMessage)) {
+    $host.UI.RawUI.WindowTitle = Get-Content $script:localSetTitleMessage
 }

@@ -55,6 +55,11 @@ function Set-SymbolicLinkBehavior {
         [switch] $R2L = $false
         )
 
+    $ErrorActionPreference = "Stop"
+    if (-not (Test-AdminRights)) {
+        Write-Error "Administrative privileges are required to perform this operation"
+    }
+
     if ($L2L -and $Enable) {
         fsutil behavior set SymLinkEvaluation L2L:1
     }
