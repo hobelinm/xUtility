@@ -6,6 +6,18 @@ Opens a given target (file or directory) in Sublime Text
 Opens a given target (file or directory) in Sublime Text.
 If Sublime Text installation folder is not found in the system it opens Sublme Text Home Page
 
+.EXAMPLE
+PS> sublime 'C:\user\myUserName\Documents'
+Opens the specified folder in Sublime Text editor if installed
+
+.EXAMPLE
+PS> sublime
+Opens Sublime Text editor if installed
+
+.EXAMPLE
+PS> sublime 'C:\user\myUserName\Documents\myFile.txt'
+Opens the specified file in Sublime Text editor if installed
+
 #>
 
 function Start-SublimeText
