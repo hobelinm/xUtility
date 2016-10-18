@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-**`v1.0.10`**
+**`v1.0.11`**
 
 ## What is PsxUtility?
 PxsUtility is a project for creating extended Utilities for PowerShell wrapping common functionality on `xUtility` module. 
@@ -9,6 +9,8 @@ This module is available for download from the [PowerShell Gallery](https://www.
 
 ## Available Utilities
 - [x] Retry Block with Retry Policy Cmdlet
+  - [Invoke-ScriptBlockWithRetry](https://github.com/hobelinm/PsxUtility/blob/master/Main/Invoke-ScriptBlockWithRetry.ps1)
+  - [New-RetryPolicy](https://github.com/hobelinm/PsxUtility/blob/master/Main/New-RetryPolicy.ps1)
 - [x] Execution block with Expiring Cache Cmdlets.
   - [Add-ExpiringCacheItem](https://github.com/hobelinm/PsxUtility/blob/master/Main/Add-ExpiringCacheItem.ps1)
   - [Get-ExpiringCacheItem](https://github.com/hobelinm/PsxUtility/blob/master/Main/Get-ExpiringCacheItem.ps1)
