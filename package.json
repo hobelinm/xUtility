@@ -1,6 +1,6 @@
 {
     "name": "ps-xutilities",
-    "version": "1.0.9",
+    "version": "1.0.10",
     "description": "Extended Utilities for PowerShell",
     "preferGlobal": true,
     "author": "Hugo Belin",
