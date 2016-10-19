@@ -32,8 +32,8 @@ This module is available for download from the [PowerShell Gallery](https://www.
 - [x] General utilities. 
   - [Start-SublimeText](https://github.com/hobelinm/PsxUtility/blob/master/Main/Start-SublimeText.ps1)
 - [x] Display formatting cmdlets: Coloring words, rows
-  - New-ConsoleColorSet
-  - Out-ColorFormat
+  - [New-ConsoleColorSet](https://github.com/hobelinm/PsxUtility/blob/master/Main/New-ConsoleColorSet.ps1)
+  - [Out-ColorFormat](https://github.com/hobelinm/PsxUtility/blob/master/Main/Out-ColorFormat.ps1)
 - [ ] Automatic module updates, Additional Package Manager(?)
 
 ## How to get it:
