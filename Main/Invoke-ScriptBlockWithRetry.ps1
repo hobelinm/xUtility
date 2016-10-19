@@ -91,3 +91,5 @@ function Invoke-ScriptBlockWithRetry {
         }
     }
 } 
+
+Set-Alias RetryBlock Invoke-ScriptBlockWithRetry

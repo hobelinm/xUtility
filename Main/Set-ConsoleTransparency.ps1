@@ -46,13 +46,17 @@ function Set-ConsoleTransparency {
     if ($Off) {
         $Level = 255
         if ($Persist) {
-            Remove-Item $script:localSetConsoleTransparencyConfig
+            Invoke-ScriptBlockWithRetry -Context { Remove-Item $script:localSetConsoleTransparencyConfig } -RetryPolicy $script:consoleTransparencyRetryPolicy
         }
     }
 
     if ($Persist -and -not $Off) {
         $config = [PSCustomObject] @{ Level = $Level }
-        $config | ConvertTo-Json -Compress | Out-File $script:localSetConsoleTransparencyConfig
+        $saveFileDefinition = {
+            $config | ConvertTo-Json -Compress | Out-File $script:localSetConsoleTransparencyConfig
+        }
+
+        Invoke-ScriptBlockWithRetry -Context $saveFileDefinition -RetryPolicy $script:consoleTransparencyRetryPolicy
     }
 
     $hwnd = (Get-Process -Id $PID).MainWindowHandle
@@ -94,6 +98,7 @@ namespace xUtilityTransparency
 
 # Initialization code
 $script:localSetConsoleTransparencyPath = Join-Path -Path $script:moduleWorkPath -ChildPath "Set-ConsoleTransparency"
+$script:consoleTransparencyRetryPolicy = New-RetryPolicy -Policy $script:consoleTransparencyPolicyName -Milliseconds $script:consoleTransparencyWaitTime -Retries $script:consoleTransparencyRetries
 
 if (-not (Test-Path $script:localSetConsoleTransparencyPath)) {
     New-Item -ItemType 'Directory' -Path $script:localSetConsoleTransparencyPath | Write-Verbose
@@ -101,7 +106,11 @@ if (-not (Test-Path $script:localSetConsoleTransparencyPath)) {
 
 $script:localSetConsoleTransparencyConfig = Join-Path -Path $script:localSetConsoleTransparencyPath -ChildPath "config.json"
 if ((Test-Path $script:localSetConsoleTransparencyConfig)) {
-    $transparencyConfig = (Get-Content $script:localSetConsoleTransparencyConfig) | Out-String | ConvertFrom-Json
+    $fileRetrieval = {
+        (Get-Content $script:localSetConsoleTransparencyConfig) | Out-String | ConvertFrom-Json | Write-Output
+    }
+
+    $transparencyConfig = Invoke-ScriptBlockWithRetry -Context $fileRetrieval -RetryPolicy $script:consoleTransparencyRetryPolicy
 
     $hwnd = (Get-Process -Id $PID).MainWindowHandle
     [xUtilityTransparency.Win32Methods]::SetWindowTransparent($hwnd, $transparencyConfig.Level)

@@ -1,6 +1,21 @@
 # Global variables
 $script:moduleWorkPath = Join-Path -Path $env:LOCALAPPDATA -ChildPath "xUtility"
 
+<# Console Transparency #>
+$script:consoleTransparencyPolicyName = "Random"
+$script:consoleTransparencyWaitTime   = 1000
+$script:consoleTransparencyRetries    = 3
+
+<# Set Title #>
+$script:setTitlePolicyName = "Random"
+$script:setTitleWaitTime   = 1000
+$script:setTitleRetries    = 3
+
+<# Set Prompt #>
+$script:setPromptPolicyName = "Random"
+$script:setPromptWaitTime   = 1000
+$script:setPromptRetries    = 3
+
 <# Expiring Cache Initialization #>
 $script:expiringCacheObjects = @{}
 

@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-**`v1.0.11`**
+**`v1.0.12`**
 
 ## What is PsxUtility?
 PxsUtility is a project for creating extended Utilities for PowerShell wrapping common functionality on `xUtility` module. 
@@ -47,8 +47,8 @@ This module is available for download from the [PowerShell Gallery](https://www.
 `PS> Import-Module -Name xUtility`
 
 ## TO DO Items:
-- Wrap Out-File calls in the new retry policy cmdlet (Set-Prompt, Set-Title, Set-ConsoleTransparency)
 - Implement remaining utilities
 - Report upstream logging/analytics from all cmdlets
+- Evaluate upstream use for config hive to store and customize values
 
 Additional features will be added over time

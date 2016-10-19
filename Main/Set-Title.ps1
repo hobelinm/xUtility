@@ -16,7 +16,7 @@ Sets the console title to "Hello World" and make it as default for all sessions 
 xUtility module
 
 .EXAMPLE
-PS> Set-Title -NoDefault
+PS> Set-Title -Clear
 Removes the default console title that is set when xUtility is loaded
 
 #>
@@ -35,25 +35,28 @@ function Set-Title {
 
         [Parameter(ParameterSetName = "Clear")]
         # Removes the default title
-        [switch] $NoDefault = $false
+        [switch] $Clear = $false
         )
 
-    if ($NoDefault) {
+    if ($Clear) {
         if ((Test-Path $script:localSetTitleMessage)) {
-            Remove-Item $script:localSetTitleMessage
+            Invoke-ScriptBlockWithRetry -Context { Remove-Item $script:localSetTitleMessage } -RetryPolicy $script:setTitleRetryPolicy
         }
+
+        $host.UI.RawUI.WindowTitle = "PowerShell"
 
         return
     }
 
     $host.UI.RawUI.WindowTitle = $Message
     if ($Persist) {
-        $Message | Out-File $script:localSetTitleMessage
+        Invoke-ScriptBlockWithRetry -Context { $Message | Out-File $script:localSetTitleMessage } -RetryPolicy $script:setTitleRetryPolicy
     }
 }
 
 # Script initialization
 $script:localSetTitlePath = Join-Path -Path $script:moduleWorkPath -ChildPath "Set-Title"
+$script:setTitleRetryPolicy = New-RetryPolicy -Policy $script:setTitlePolicyName -Milliseconds $script:setTitleWaitTime -Retries $script:setTitleRetries
 
 if (-not (Test-Path $script:localSetTitlePath)) {
     New-Item -ItemType 'Directory' -Path $script:localSetTitlePath | Write-Verbose
@@ -61,5 +64,9 @@ if (-not (Test-Path $script:localSetTitlePath)) {
 
 $script:localSetTitleMessage = Join-Path -Path $script:localSetTitlePath -ChildPath "title.txt"
 if ((Test-Path $script:localSetTitleMessage)) {
-    $host.UI.RawUI.WindowTitle = Get-Content $script:localSetTitleMessage
+    $fileRetrieval = {
+        Get-Content $script:localSetTitleMessage
+    }
+
+    $host.UI.RawUI.WindowTitle = Invoke-ScriptBlockWithRetry -Context $fileRetrieval -RetryPolicy $script:setTitleRetryPolicy
 }

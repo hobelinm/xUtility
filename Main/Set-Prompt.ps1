@@ -62,7 +62,7 @@ function Set-Prompt {
         $script:extendedPrompt = $Callback
         if ($Persist) {
             # Write Callback to disk
-            $Callback.ToString() | Out-File $script:localSetPromptCallback
+            Invoke-ScriptBlockWithRetry -Context { $Callback.ToString() | Out-File $script:localSetPromptCallback } -RetryPolicy $script:setPromptRetryPolicy
         }
 
         return
@@ -71,7 +71,7 @@ function Set-Prompt {
     if ($ClearCallback) {
         $script:extendedPrompt = $null
         if ((Test-Path -Path $script:localSetPromptCallback)) {
-            Remove-Item $script:localSetPromptCallback
+            Invoke-ScriptBlockWithRetry -Context { Remove-Item $script:localSetPromptCallback } -RetryPolicy $script:setPromptRetryPolicy
         }
 
         return
@@ -103,6 +103,7 @@ Set-Alias Prompt Set-Prompt
 # Initialization code
 $script:extendedPrompt = $null
 $script:localSetPromptPath = Join-Path -Path $script:moduleWorkPath -ChildPath "Set-Prompt"
+$script:setPromptRetryPolicy = New-RetryPolicy -Policy $script:setPromptPolicyName -Milliseconds $script:setPromptWaitTime -Retries $script:setPromptRetries
 
 if (-not (Test-Path $script:localSetPromptPath)) {
     New-Item -ItemType 'Directory' -Path $script:localSetPromptPath | Write-Verbose
@@ -110,6 +111,12 @@ if (-not (Test-Path $script:localSetPromptPath)) {
 
 $script:localSetPromptCallback = Join-Path -Path $script:localSetPromptPath -ChildPath "callback.txt"
 if ((Test-Path $script:localSetPromptCallback)) {
+    $fileRetrieval = {
+        Get-Content $script:localSetPromptCallback
+    }
+
+    $callbackFile = Invoke-ScriptBlockWithRetry -Context $fileRetrieval -RetryPolicy $script:setPromptRetryPolicy
+
     $callbackFile = Get-Content $script:localSetPromptCallback
     $script:extendedPrompt = [ScriptBlock]::Create($callbackFile)
 }
