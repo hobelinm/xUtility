@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-**`v1.0.12`**
+**`v1.0.13`**
 
 ## What is PsxUtility?
 PxsUtility is a project for creating extended Utilities for PowerShell wrapping common functionality on `xUtility` module. 
@@ -31,7 +31,9 @@ This module is available for download from the [PowerShell Gallery](https://www.
   - [Set-SymbolicLinkBehavior](https://github.com/hobelinm/PsxUtility/blob/master/Main/Set-SymbolicLinkBehavior.ps1)
 - [x] General utilities. 
   - [Start-SublimeText](https://github.com/hobelinm/PsxUtility/blob/master/Main/Start-SublimeText.ps1)
-- [ ] Display formatting cmdlets: Coloring words, rows
+- [x] Display formatting cmdlets: Coloring words, rows
+  - New-ConsoleColorSet
+  - Out-ColorFormat
 - [ ] Automatic module updates, Additional Package Manager(?)
 
 ## How to get it:
@@ -47,7 +49,6 @@ This module is available for download from the [PowerShell Gallery](https://www.
 `PS> Import-Module -Name xUtility`
 
 ## TO DO Items:
-- Implement remaining utilities
 - Report upstream logging/analytics from all cmdlets
 - Evaluate upstream use for config hive to store and customize values
 

@@ -23,6 +23,9 @@ $script:expiringCacheObjects = @{}
 $script:RetryPolicyTypeName = 'System.xUtility.RetryPolicy'
 $script:RetryLogicLimitErrorId = 'RetryLogicLimitReached'
 
+<# Console Color Set Initialization #>
+$script:consoleColorSetTypeName = 'System.xUtility.ConsoleColorSet'
+
 # Load all cmdlets
 $mainFolder = Join-Path -Path $PSScriptRoot -ChildPath "Main"
 Get-ChildItem -Filter '*.ps1' -Recurse -Path $mainFolder | ForEach-Object {
