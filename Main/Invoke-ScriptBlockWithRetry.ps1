@@ -18,6 +18,16 @@ retry [1000, 2000, 4000] will the determine the wait time. The provided context
 will be attempted 3 times according to the policy defined.
 
 .NOTES
+    This cmdlet requires terminating errors to be raised. If your global $ErrorActionPreference is set to 'Continue'
+    or 'SilentlyContinue' errors will not be catched. There are a couple of ways to fix this:
+    1. Set your global variable to 'Stop':
+    PS> $ErrorActionPreference = 'Stop'
+
+    2. Set this preference on the script block commands. i.e. from the example the context to invoke is:
+    { dir Z:\ }
+    Change this to stop on non-terminating errors as follows:
+    { dir Z:\ -ErrorAction Stop}
+
     See New-RetryPolicy cmdlet for details on policy creation as well as all
     available options.
 

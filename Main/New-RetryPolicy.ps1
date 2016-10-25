@@ -152,6 +152,7 @@ function New-RetryPolicy {
             Retries = $Retries
             RetryCount = 0
             Milliseconds = $Milliseconds
+            BaseMilliseconds = $Milliseconds
         }
 
         # Create retry algorithm here
@@ -193,7 +194,7 @@ function New-RetryPolicy {
                     Write-Verbose ("[Linear] About to sleep {0} Milliseconds" -f $WorkingSet['Milliseconds'])
                     Start-Sleep -Milliseconds $WorkingSet['Milliseconds']
                     # HashTables are passed as reference, so this will update the caller variable
-                    $WorkingSet['Milliseconds'] = $WorkingSet['Milliseconds'] + $WorkingSet['Milliseconds']
+                    $WorkingSet['Milliseconds'] = $WorkingSet['Milliseconds'] + $WorkingSet['BaseMilliseconds']
                     $WorkingSet['RetryCount'] = $WorkingSet['RetryCount'] + 1
                 }
             }
@@ -215,7 +216,7 @@ function New-RetryPolicy {
                     Write-Verbose ("[Exponential] About to sleep {0} Milliseconds" -f $WorkingSet['Milliseconds'])
                     Start-Sleep -Milliseconds $WorkingSet['Milliseconds']
                     # HashTables are passed as reference, so this will update the caller variable
-                    $WorkingSet['Milliseconds'] = $WorkingSet['Milliseconds'] * $WorkingSet['Milliseconds']
+                    $WorkingSet['Milliseconds'] = $WorkingSet['Milliseconds'] + $WorkingSet['Milliseconds']
                     $WorkingSet['RetryCount'] = $WorkingSet['RetryCount'] + 1
                 }
             }
