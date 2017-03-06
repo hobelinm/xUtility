@@ -24,7 +24,7 @@ Removes the default console title that is set when xUtility is loaded
 function Set-Title {
     [CmdletBinding(DefaultParameterSetName = "Title")]
 	param(
-        [Parameter(ParameterSetName = "Title")]
+        [Parameter(Mandatory, Position = 0, ParameterSetName = "Title")]
         [ValidateNotNullOrEmpty()]
         # Message to set the window title to
         [string] $Message,

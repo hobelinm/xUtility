@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-**`v1.0.14`**
+**`v1.0.15`**
 
 ## What is PsxUtility?
 PxsUtility is a project for creating extended Utilities for PowerShell wrapping common functionality on `xUtility` module. 
@@ -53,3 +53,6 @@ This module is available for download from the [PowerShell Gallery](https://www.
 - Evaluate upstream use for config hive to store and customize values
 
 Additional features will be added over time
+
+## Change List:
+`v1.0.15` - `Set-Title` needs to use `-Message` in order to work. Set Message parameter as default so it is not needed
