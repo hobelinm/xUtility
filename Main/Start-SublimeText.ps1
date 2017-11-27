@@ -30,14 +30,21 @@ function Start-SublimeText
         )
 
     $ErrorActionPreference = 'Stop'
-    $sublimePath = Join-Path -Path $env:ProgramFiles -ChildPath "Sublime Text 3"
+    $sublimePath = ''
+    if (isWindows) {
+        $sublimePath = Join-Path -Path $env:ProgramFiles -ChildPath "Sublime Text 3"
+        $sublimePath = Join-Path -Path $sublimePath -ChildPath 'subl.exe'
+    }
+    else {
+        $sublimePath = '/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl'
+    }
+
     if (-not (Test-Path $sublimePath)) {
         Start-Process 'http://www.sublimetext.com/3'
         Write-Error '[Start-SublimeText] Sublime Text 3 is not installed on the system'
     }
 
-    $sublimeExe = [System.IO.FileInfo] (Join-Path -Path $sublimePath -ChildPath 'subl.exe')
-    . $sublimeExe $Target
+    . $sublimePath $Target
 }
 
 Set-Alias sublime Start-SublimeText

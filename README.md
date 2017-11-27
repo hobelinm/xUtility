@@ -1,11 +1,11 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-**`v1.0.14`**
+**`v2.0.0`**
 
 ## What is PsxUtility?
 PxsUtility is a project for creating extended Utilities for PowerShell wrapping common functionality on `xUtility` module. 
-This module is available for download from the [PowerShell Gallery](https://www.powershellgallery.com/) or from [NPM Registry](https://www.npmjs.com/)
+This module is available for download from the [PowerShell Gallery](https://www.powershellgallery.com/)
 
 ## Available Utilities
 - [x] Retry Block with Retry Policy Cmdlet
@@ -39,17 +39,22 @@ This module is available for download from the [PowerShell Gallery](https://www.
 ## How to get it:
 - [xUtility in the PowerShell Gallery](https://www.powershellgallery.com/packages/xUtility)
 
-`PS> Install-Module -Name xUtility`<br>
-`PS> Import-Module -Name xUtility`
-
-- [xUtility in the NPM Registry](https://www.npmjs.com/package/ps-xutilities) via `PsModuleRegister` also found on [NPM](https://www.npmjs.com/package/psmoduleregister)
-
-`PS> npm install -g psmoduleregister`<br>
-`PS> psmoduleregister --install ps-xutilities`<br>
-`PS> Import-Module -Name xUtility`
+````
+PS> Install-Module -Name xUtility
+PS> Import-Module -Name xUtility
+````
 
 ## TO DO Items:
+- Feature: Inline Progress `[### ] 75% [Caller]: Inline Message`
+- Write tests
 - Report upstream logging/analytics from all cmdlets
-- Evaluate upstream use for config hive to store and customize values
+- Automatic updates
+- Add post documentation for the multiple features
 
 Additional features will be added over time
+
+## Change Log
+
+````
+2.0.0 - Support for MacOS in addition to Windows OS
+````

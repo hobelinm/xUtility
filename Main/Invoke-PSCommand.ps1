@@ -28,6 +28,8 @@ new session with admin rights. The new session will not process the contents of 
 .NOTES
     If command is executed in the current context, it will be wrapped
     in a ScripBlock object and then executed
+
+    This function is only available in Windows
 #>
 
 function Invoke-PSCommand {

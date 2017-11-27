@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-    Sets the current console window to a specified size
+Sets the current console window to a specified size
 
 .DESCRIPTION
-    Sets the current console window to a specified size.
-    Alternatively it can be maximized.
+Sets the current console window to a specified size.
+Alternatively it can be maximized.
 
 .EXAMPLE
 PS> Set-WindowSize -Height 60 -Width 130
@@ -17,6 +17,8 @@ Sets the console window to the maximum size available
 .NOTES
     When downsizing the contents of the buffer are flushed. If there's content wider thant the
     target content, it will be lost
+
+    This function is only available in Windows
 
 #>
 

@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-    Sets console transparency
+Sets console transparency
 
 .DESCRIPTION
-    Adjust the console transparency to a given level
+Adjust the console transparency to a given level
 
 .EXAMPLE
 PS> Set-ConsoleTransparency
@@ -21,17 +21,18 @@ Sets console transparency to the given level
 PS> Set-ConsoleTransparency -Persist
 Sets console transparency to the predefined level and persist its value for other sessions
 
-.EXAMPLE
+.NOTES
+This function is only available in Windows
 
 #>
 
 function Set-ConsoleTransparency {
     [CmdletBinding(DefaultParameterSetName = "Level")]
     param(
-        [Parameter(ParameterSetName = "Level")]
+        [Parameter(Position = 0, ParameterSetName = "Level")]
         [ValidateRange(0, 255)]
-        # Set transparency level
-        [int] $Level = 220,
+        # Set transparency level 
+        [int] $Level = (GetConfig('Module.ConsoleTransparency.DefaultLevel')),
 
         [Parameter(ParameterSetName = "Off")]
         # Disables transparency
@@ -46,17 +47,33 @@ function Set-ConsoleTransparency {
     if ($Off) {
         $Level = 255
         if ($Persist) {
-            Invoke-ScriptBlockWithRetry -Context { Remove-Item $script:localSetConsoleTransparencyConfig } -RetryPolicy $script:consoleTransparencyRetryPolicy
+            $params = @{
+                'Context' = { 
+                    $configFile = GetConfig('Module.ConsoleTransparency.Config')
+                    if ((Test-Path $configFile)) {
+                        Remove-Item $configFile
+                    }
+                }
+                'RetryPolicy' = $script:consoleTransparencyRetryPolicy
+            }
+
+            Invoke-ScriptBlockWithRetry @params
         }
     }
 
     if ($Persist -and -not $Off) {
-        $config = [PSCustomObject] @{ Level = $Level }
+        $config = [PSCustomObject] @{ 'Level' = $Level }
+        $transparencyConfigFile = GetConfig('Module.ConsoleTransparency.Config')
         $saveFileDefinition = {
-            $config | ConvertTo-Json -Compress | Out-File $script:localSetConsoleTransparencyConfig
+            $config | Export-Clixml -Path $transparencyConfigFile
         }
 
-        Invoke-ScriptBlockWithRetry -Context $saveFileDefinition -RetryPolicy $script:consoleTransparencyRetryPolicy
+        $params = @{
+            'Context'     = $saveFileDefinition
+            'RetryPolicy' = $script:consoleTransparencyRetryPolicy
+        }
+
+        Invoke-ScriptBlockWithRetry @params
     }
 
     $hwnd = (Get-Process -Id $PID).MainWindowHandle
@@ -96,22 +113,26 @@ namespace xUtilityTransparency
 }
 "@
 
-# Initialization code
-$script:localSetConsoleTransparencyPath = Join-Path -Path $script:moduleWorkPath -ChildPath "Set-ConsoleTransparency"
-$script:consoleTransparencyRetryPolicy = New-RetryPolicy -Policy $script:consoleTransparencyPolicyName -Milliseconds $script:consoleTransparencyWaitTime -Retries $script:consoleTransparencyRetries
-
-if (-not (Test-Path $script:localSetConsoleTransparencyPath)) {
-    New-Item -ItemType 'Directory' -Path $script:localSetConsoleTransparencyPath | Write-Verbose
+# Initialization code GetConfig('Module.ConsoleTransparency.PolicyName')
+$params = @{
+    'Policy'       = GetConfig('Module.ConsoleTransparency.PolicyName')
+    'Milliseconds' = GetConfig('Module.ConsoleTransparency.WaitTimeMSecs')
+    'Retries'      = GetConfig('Module.ConsoleTransparency.RetryTimes')
 }
 
-$script:localSetConsoleTransparencyConfig = Join-Path -Path $script:localSetConsoleTransparencyPath -ChildPath "config.json"
-if ((Test-Path $script:localSetConsoleTransparencyConfig)) {
+$script:consoleTransparencyRetryPolicy = New-RetryPolicy @params
+$transparencyConfigFile = GetConfig('Module.ConsoleTransparency.Config')
+if ((Test-Path $transparencyConfigFile)) {
     $fileRetrieval = {
-        (Get-Content $script:localSetConsoleTransparencyConfig) | Out-String | ConvertFrom-Json | Write-Output
+        Import-Clixml -Path $transparencyConfigFile | Write-Output
     }
 
-    $transparencyConfig = Invoke-ScriptBlockWithRetry -Context $fileRetrieval -RetryPolicy $script:consoleTransparencyRetryPolicy
+    $params = @{
+        'Context'     = $fileRetrieval
+        'RetryPolicy' = $script:consoleTransparencyRetryPolicy
+    }
 
-    $hwnd = (Get-Process -Id $PID).MainWindowHandle
-    [xUtilityTransparency.Win32Methods]::SetWindowTransparent($hwnd, $transparencyConfig.Level)
+    $transparencyConfig = Invoke-ScriptBlockWithRetry @params
+    $windowHandle = (Get-Process -Id $PID).MainWindowHandle
+    [xUtilityTransparency.Win32Methods]::SetWindowTransparent($windowHandle, $transparencyConfig.Level)
 }

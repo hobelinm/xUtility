@@ -41,6 +41,7 @@ function New-ConsoleColorSet {
     }
 
     $consoleColorSet = [PSCustomObject] $consoleColorSetTable
-    $consoleColorSet.PSTypeNames.Insert(0, $script:consoleColorSetTypeName)
+    $val = GetConfig('Module.ConsoleColorSetTypeName')
+    $consoleColorSet.PSTypeNames.Insert(0, $val)
     Write-Output $consoleColorSet
 }

@@ -24,7 +24,7 @@ Removes the default console title that is set when xUtility is loaded
 function Set-Title {
     [CmdletBinding(DefaultParameterSetName = "Title")]
 	param(
-        [Parameter(ParameterSetName = "Title")]
+        [Parameter(ParameterSetName = "Title", Position = 0)]
         [ValidateNotNullOrEmpty()]
         # Message to set the window title to
         [string] $Message,
@@ -38,35 +38,52 @@ function Set-Title {
         [switch] $Clear = $false
         )
 
+    $titleConfig = GetConfig('Module.Title.Config')
     if ($Clear) {
-        if ((Test-Path $script:localSetTitleMessage)) {
-            Invoke-ScriptBlockWithRetry -Context { Remove-Item $script:localSetTitleMessage } -RetryPolicy $script:setTitleRetryPolicy
+        if ((Test-Path $titleConfig)) {
+            $data = @{
+                'Context'     = { Remove-Item $titleConfig }
+                'RetryPolicy' = $Script:setTitleRetryPolicy
+            }
+
+            Invoke-ScriptBlockWithRetry @data
         }
 
-        $host.UI.RawUI.WindowTitle = "PowerShell"
+        $host.UI.RawUI.WindowTitle = $Script:defaultTitle
 
         return
     }
 
     $host.UI.RawUI.WindowTitle = $Message
     if ($Persist) {
-        Invoke-ScriptBlockWithRetry -Context { $Message | Out-File $script:localSetTitleMessage } -RetryPolicy $script:setTitleRetryPolicy
+        $data = @{
+            'Context'     = { $Message | Out-File $titleConfig }
+            'RetryPolicy' = $Script:setTitleRetryPolicy
+        }
+
+        Invoke-ScriptBlockWithRetry @data
     }
 }
 
 # Script initialization
-$script:localSetTitlePath = Join-Path -Path $script:moduleWorkPath -ChildPath "Set-Title"
-$script:setTitleRetryPolicy = New-RetryPolicy -Policy $script:setTitlePolicyName -Milliseconds $script:setTitleWaitTime -Retries $script:setTitleRetries
-
-if (-not (Test-Path $script:localSetTitlePath)) {
-    New-Item -ItemType 'Directory' -Path $script:localSetTitlePath | Write-Verbose
+$Script:defaultTitle = $host.UI.RawUI.WindowTitle
+$data = @{
+    'Policy'       = GetConfig('Module.Title.PolicyName')
+    'Milliseconds' = GetConfig('Module.Title.WaitTimeMSecs')
+    'Retries'      = GetConfig('Module.Title.RetryTimes')
 }
+$Script:setTitleRetryPolicy = New-RetryPolicy @data
 
-$script:localSetTitleMessage = Join-Path -Path $script:localSetTitlePath -ChildPath "title.txt"
-if ((Test-Path $script:localSetTitleMessage)) {
+$titleFile = GetConfig('Module.Title.Config')
+if ((Test-Path $titleFile)) {
     $fileRetrieval = {
-        Get-Content $script:localSetTitleMessage
+        Get-Content -Path $titleFile
     }
 
-    $host.UI.RawUI.WindowTitle = Invoke-ScriptBlockWithRetry -Context $fileRetrieval -RetryPolicy $script:setTitleRetryPolicy
+    $data = @{
+        'Context'     = $fileRetrieval
+        'RetryPolicy' = $Script:setTitleRetryPolicy
+    }
+
+    $host.UI.RawUI.WindowTitle = Invoke-ScriptBlockWithRetry @data
 }

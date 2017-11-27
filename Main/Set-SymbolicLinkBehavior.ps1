@@ -21,6 +21,8 @@ Disables symbolic link behavior for the provided behaviors
     These operations require administrative rights, you can use 
     Invoke-PSCommand to attemt to run this cmdlet with the right
     set of permissions
+
+    This function is only available in Windows
 #>
 
 function Set-SymbolicLinkBehavior {

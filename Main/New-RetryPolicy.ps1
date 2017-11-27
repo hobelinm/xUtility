@@ -167,7 +167,8 @@ function New-RetryPolicy {
                     }
 
                     if ($WorkingSet['RetryCount'] -ge $WorkingSet['Retries']) {
-                        Write-Error -Message ("[Constant] RetryCount[{0}] reached the limit of allowed Retries[{1}]" -f $WorkingSet['RetryCount'], $WorkingSet['Retries']) `
+                        Write-Error -Message ("[Constant] RetryCount[{0}] reached the limit of allowed Retries[{1}]" -f `
+                            $WorkingSet['RetryCount'], $WorkingSet['Retries']) `
                             -ErrorId 'RetryLogicLimitReached'
                     }
 
@@ -187,7 +188,8 @@ function New-RetryPolicy {
                     }
 
                     if ($WorkingSet['RetryCount'] -ge $WorkingSet['Retries']) {
-                        Write-Error -Message ("[Linear] RetryCount[{0}] reached the limit of allowed Retries[{1}]" -f $WorkingSet['RetryCount'], $WorkingSet['Retries']) `
+                        Write-Error -Message ("[Linear] RetryCount[{0}] reached the limit of allowed Retries[{1}]" -f `
+                            $WorkingSet['RetryCount'], $WorkingSet['Retries']) `
                             -ErrorId 'RetryLogicLimitReached'
                     }
 
@@ -209,7 +211,8 @@ function New-RetryPolicy {
                     }
 
                     if ($WorkingSet['RetryCount'] -ge $WorkingSet['Retries']) {
-                        Write-Error -Message ("[Exponential] RetryCount[{0}] reached the limit of allowed Retries[{1}]" -f $WorkingSet['RetryCount'], $WorkingSet['Retries']) `
+                        Write-Error -Message ("[Exponential] RetryCount[{0}] reached the limit of allowed Retries[{1}]" -f `
+                            $WorkingSet['RetryCount'], $WorkingSet['Retries']) `
                             -ErrorId 'RetryLogicLimitReached'
                     }
 
@@ -231,7 +234,8 @@ function New-RetryPolicy {
                     }
 
                     if ($WorkingSet['RetryCount'] -ge $WorkingSet['Retries']) {
-                        Write-Error -Message ("[Random] RetryCount[{0}] reached the limit of allowed Retries[{1}]" -f $WorkingSet['RetryCount'], $WorkingSet['Retries']) `
+                        Write-Error -Message ("[Random] RetryCount[{0}] reached the limit of allowed Retries[{1}]" -f `
+                            $WorkingSet['RetryCount'], $WorkingSet['Retries']) `
                             -ErrorId 'RetryLogicLimitReached'
                     }
 
@@ -258,7 +262,7 @@ function New-RetryPolicy {
     $policyDraft['ExceptionErrorId'] = $ExceptionErrorId
 
 	$retryPolicy = [PSCustomObject] $policyDraft
-    $retryPolicy.PSTypeNames.Insert(0, $script:RetryPolicyTypeName)
+    $retryPolicy.PSTypeNames.Insert(0, (GetConfig('Module.RetryBlock.PolicyTypeName')))
     Write-Output $retryPolicy
 }
 

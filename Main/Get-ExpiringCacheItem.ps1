@@ -20,10 +20,10 @@ function Get-ExpiringCacheItem {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         # The key to access the cached item
-        [string] $Key = ""
+        [string] $Key = ''
         )
 
-    $ErrorActionPreference = "Stop"
+    $ErrorActionPreference = 'Stop'
     if (-not $script:expiringCacheObjects.Contains($Key)) {
         Write-Error "Item with key '$Key' was not found in the cache"
     }

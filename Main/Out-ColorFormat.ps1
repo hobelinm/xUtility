@@ -12,7 +12,7 @@ PS> $cs += (New-ConsoleColorSet -ForegroundColor Green)
 PS> $cs += (New-ConsoleColorSet -ForegroundColor Yellow)
 PS> $cs += (New-ConsoleColorSet -ForegroundColor Red)
 PS> $cs += (New-ConsoleColorSet -ForegroundColor White)
-PS> dir E:\ | Out-String | % { $_ -split "`r`n" } | ? {$_ -ne ""}| Out-ColorFormat -RowColorSet $cs
+PS> dir E:\ | Out-String | % { $_ -split "`r`n" } | ? {$_ -ne ""} | Out-ColorFormat -RowColorSet $cs
 
 Displays the contents of E: in the specified set of row color formants
 
@@ -22,7 +22,7 @@ PS> $colorDict['AM'] = New-ConsoleColorSet -ForegroundColor Black -BackgroundCol
 PS> $colorDict['PM'] = New-ConsoleColorSet -ForegroundColor White -BackgroundColor Black
 PS> $colorDict['dev'] = New-ConsoleColorSet -ForegroundColor Green
 PS> $colorDict['repos'] = New-ConsoleColorSet -ForegroundColor Cyan
-PS> dir E:\ | Out-String |%{ $_ -split "`r`n" }|?{$_ -ne ""}| Out-ColorFormat -WordColorSet $cdict
+PS> dir E:\ | Out-String |%{ $_ -split "`r`n" }|?{$_ -ne ""}| Out-ColorFormat -WordColorSet $colorDict
 
 Displays the contents of E: and replaces the format of the words AM, PM, dev, repos with the 
 ones specified on the dictionary
@@ -139,9 +139,10 @@ function ValidateRowColorSet {
 
     $ValidateObject | ForEach-Object {
         $lineColorSet = $_
-        if ($lineColorSet.PSTypeNames[0] -ne $script:consoleColorSetTypeName) {
+        $colorType = GetConfig('Module.ConsoleColorSetTypeName')
+        if ($lineColorSet.PSTypeNames[0] -ne $colorType) {
             throw ("Object of type [{0}] does not correspond to required type {1}" -f 
-                $lineColorSet.PSTypeNames[0], $script:consoleColorSetTypeName)
+                $lineColorSet.PSTypeNames[0], $colorType)
         }
     }
 

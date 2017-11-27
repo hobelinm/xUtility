@@ -9,6 +9,9 @@
 PS> Test-AdminRights
 Returns $true when current session has administrative rights and false otherwise
 
+.NOTES
+This function is only available in Windows
+
 #>
 
 function Test-AdminRights {

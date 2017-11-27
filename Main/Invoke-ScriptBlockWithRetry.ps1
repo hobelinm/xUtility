@@ -42,12 +42,16 @@ function Invoke-ScriptBlockWithRetry {
         [ScriptBlock] $Context,
 
         [Parameter(Mandatory)]
-        [ValidateScript({ $_.PSTypeNames[0] -eq $script:RetryPolicyTypeName })]
+        [ValidateScript({ $_.PSTypeNames[0] -eq (GetConfig('Module.RetryBlock.PolicyTypeName')) })]
         # Retry policy determines wait time, whether wait follows any pattern, and the types of exceptions to under which will retry
         $RetryPolicy
         )
 
-    $ErrorActionPreference = "Stop"
+    $ErrorActionPreference = 'Stop'
+    if ($Global:ErrorActionPreference -ne 'Stop') {
+        $Global:ErrorActionPreference = 'Stop'
+    }
+    
     $continueRetrying = $true
     $retryLogicWorkingSet = $RetryPolicy.WorkingSet.Clone()
     while ($continueRetrying) {
@@ -84,7 +88,8 @@ function Invoke-ScriptBlockWithRetry {
                         $e2 = $e2.ErrorRecord
                     }
                     
-                    if ($e2.FullyQualifiedErrorId -ne $script:RetryLogicLimitErrorId) {
+                    $retryLimitErrorId = GetConfig('Module.RetryBlock.RetryErrorId')
+                    if ($e2.FullyQualifiedErrorId -ne $retryLimitErrorId) {
                         Write-Error -Message ("Error during RetryLogicEvaluation: {0}" -f $e2) -ErrorId 'InvalidRetryLogicEvaluation'
                     }
                     else {

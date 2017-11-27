@@ -27,7 +27,7 @@ function Add-ExpiringCacheItem {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         # A key to reference this item in the cache
-        [string] $Key = "",
+        [string] $Key = '',
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
@@ -43,7 +43,7 @@ function Add-ExpiringCacheItem {
         [switch] $Force = $false
         )
 
-    $ErrorActionPreference = "Stop"
+    $ErrorActionPreference = 'Stop'
     if ($script:expiringCacheObjects.Contains($Key) -and -not $Force) {
         Write-Error "Cache already contains an object with key '$Key'"
     }

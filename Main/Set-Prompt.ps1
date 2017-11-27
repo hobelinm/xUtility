@@ -49,6 +49,7 @@ function Set-Prompt {
         [ScriptBlock] $Callback = $null,
 
         [Parameter(ParameterSetName = "Extended")]
+        [Parameter(ParameterSetName = "Clear")]
         # Persist the callback to a file so that it can be used in multiple sessions
         [switch] $Persist = $false,
 
@@ -58,33 +59,71 @@ function Set-Prompt {
         )
 
     $lastOperationSucceeded = $?
+    
+    $joinChar = '\'
+    if(-not (GetConfig('Module.IsWindows'))) {
+        $joinChar = '/'
+        if ($Script:oddPrompt -eq $null) {
+            $Script:oddPrompt = $false
+        }
+
+        if ($Script:oddPrompt) {
+            $Script:oddPrompt = $false
+            return
+        }
+    }
+
+    $callbackKey = GetConfig('Module.Prompt.CallbackCacheKey')
     if ($Callback -ne $null) {
-        $script:extendedPrompt = $Callback
+        $p = @{
+            'Key'            = $callbackKey
+            'ItemDefinition' = $Callback
+            'Expiration'     = GetConfig('Module.Prompt.CallbackExpiration')
+            'Force'          = $true
+        }
+    
+        Add-ExpiringCacheItem @p
         if ($Persist) {
             # Write Callback to disk
-            Invoke-ScriptBlockWithRetry -Context { $Callback.ToString() | Out-File $script:localSetPromptCallback } -RetryPolicy $script:setPromptRetryPolicy
+            $promptCallbackFile = GetConfig('Module.Prompt.CallbackFile')
+            $p = @{
+                'Context'     = { $Callback | Export-Clixml -Path $promptCallbackFile }
+                'RetryPolicy' = $Script:setPromptRetryPolicy
+            }
+            Invoke-ScriptBlockWithRetry @p
         }
 
         return
     }
 
     if ($ClearCallback) {
-        $script:extendedPrompt = $null
-        if ((Test-Path -Path $script:localSetPromptCallback)) {
-            Invoke-ScriptBlockWithRetry -Context { Remove-Item $script:localSetPromptCallback } -RetryPolicy $script:setPromptRetryPolicy
+        $p = @{
+            'Key'            = $callbackKey
+            'ItemDefinition' = { $v = Get-Random }
+            'Expiration'     = GetConfig('Module.Prompt.CallbackExpiration')
+            'Force'          = $true
+        }
+    
+        Add-ExpiringCacheItem @p
+        if ($Persist) {
+            $promptCallbackFile = GetConfig('Module.Prompt.CallbackFile')
+            if ((Test-Path -Path $promptCallbackFile)) {
+                $p = @{
+                    'Context'     = { Remove-Item $promptCallbackFile }
+                    'RetryPolicy' = $Script:setPromptRetryPolicy
+                }
+                Invoke-ScriptBlockWithRetry @p
+            }
         }
 
         return
     }
 
-    if ($script:extendedPrompt -ne $null) {
-        . $script:extendedPrompt
-    }
-
+    $val = Get-ExpiringCacheItem -Key $callbackKey
     Write-Host "[ " -ForegroundColor Cyan -NoNewLine
-    $PWD.Path.Split('\') | Where-Object { $_ -ne '' } | ForEach-Object {
+    $PWD.Path.Split($joinChar) | Where-Object { $_ -ne '' } | ForEach-Object {
         Write-Host $_ -NoNewLine -ForegroundColor DarkGray
-        Write-Host "\" -NoNewLine -ForegroundColor White
+        Write-Host $joinChar -NoNewLine -ForegroundColor White
     }
 
     Write-Host " ]" -ForegroundColor Cyan
@@ -96,27 +135,45 @@ function Set-Prompt {
     }
 
     "> "
+    
+    if(-not (GetConfig('Module.IsWindows'))) {
+        $Script:oddPrompt = $true
+    }
 }
 
 Set-Alias Prompt Set-Prompt
 
 # Initialization code
-$script:extendedPrompt = $null
-$script:localSetPromptPath = Join-Path -Path $script:moduleWorkPath -ChildPath "Set-Prompt"
-$script:setPromptRetryPolicy = New-RetryPolicy -Policy $script:setPromptPolicyName -Milliseconds $script:setPromptWaitTime -Retries $script:setPromptRetries
-
-if (-not (Test-Path $script:localSetPromptPath)) {
-    New-Item -ItemType 'Directory' -Path $script:localSetPromptPath | Write-Verbose
+$p = @{
+    'Policy'       = GetConfig('Module.Prompt.PolicyName')
+    'Milliseconds' = GetConfig('Module.Prompt.WaitTimeMSecs')
+    'Retries'      = GetConfig('Module.Prompt.RetryTimes')
 }
+$Script:setPromptRetryPolicy = New-RetryPolicy @p
 
-$script:localSetPromptCallback = Join-Path -Path $script:localSetPromptPath -ChildPath "callback.txt"
-if ((Test-Path $script:localSetPromptCallback)) {
-    $fileRetrieval = {
-        Get-Content $script:localSetPromptCallback
+# Checks if there's a prompt change, and update the prompt accordingly
+$exPrompt = {
+    $callBackFile = GetConfig('Module.Prompt.CallbackFile')
+    if ((Test-Path $callBackFile)) {
+        $fileRetrieval = {
+            Import-Clixml -Path $callBackFile
+        }
+    
+        $p = @{
+            'Context'     = $fileRetrieval
+            'RetryPolicy' = $Script:setPromptRetryPolicy
+        }
+        $callbackScript = Invoke-ScriptBlockWithRetry @p
+        $executable = [ScriptBlock]::Create($callbackScript)
+        . $executable
     }
-
-    $callbackFile = Invoke-ScriptBlockWithRetry -Context $fileRetrieval -RetryPolicy $script:setPromptRetryPolicy
-
-    $callbackFile = Get-Content $script:localSetPromptCallback
-    $script:extendedPrompt = [ScriptBlock]::Create($callbackFile)
 }
+
+$p = @{
+    'Key'            = GetConfig('Module.Prompt.CallbackCacheKey')
+    'ItemDefinition' = $exPrompt
+    'Expiration'     = GetConfig('Module.Prompt.CallbackExpiration')
+    'Force'          = $true
+}
+
+Add-ExpiringCacheItem @p
