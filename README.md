@@ -1,7 +1,11 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
+<<<<<<< HEAD
 **`v2.0.0`**
+=======
+**`v1.0.15`**
+>>>>>>> 7c3f4f8cdcc514f28a47cc9c7848d10caf3de8bf
 
 ## What is PsxUtility?
 PxsUtility is a project for creating extended Utilities for PowerShell wrapping common functionality on `xUtility` module. 
