@@ -1,4 +1,13 @@
 $Script:defaultConfig = @{
+  'Module.InlineProgress.BarSize' = 4
+  'Module.InlineProgress.Bars' = @('#', '*', '+', '|')
+  'Module.PackageVersionUrl' = 'https://raw.githubusercontent.com/hobelinm/PsxUtility/master/package.json'
+  'Module.UpdateCheckSpan' = [TimeSpan] '30.00:00:00'
+  'Module.VersionTraceFile' = (. {
+    $appData = Get-AppDataPath
+    $traceFile = Join-Path -Path $appData -ChildPath 'PublishedVersion.xml'
+    Write-Output $traceFile
+  })
   'Module.NoCustomPrompt' = $false
   'Module.IsWindows' = . { isWindows }
   'Module.RetryBlock.PolicyTypeName' = 'System.xUtility.RetryPolicy'
@@ -9,12 +18,7 @@ $Script:defaultConfig = @{
   'Module.Prompt.CallbackCacheKey' = 'SetPromptCustomCallback'
   'Module.Prompt.CallbackExpiration' = [TimeSpan] '0:0:5'
   'Module.Prompt.CallbackFile' = (. {
-    $tmp = Get-TempPath
-    $moduleTemp = (Join-Path -Path $tmp -ChildPath 'xUtility')
-    if (-not (Test-Path $moduleTemp)) {
-      New-Item -ItemType Directory -Path $moduleTemp | Write-Verbose
-    }
-
+    $moduleTemp = Get-TempPath
     $configFile = 'SetPrompt.xml'
     $configFile = Join-Path -Path $moduleTemp -ChildPath $configFile
     Write-Output $configFile
@@ -23,12 +27,7 @@ $Script:defaultConfig = @{
   'Module.Title.WaitTimeMSecs' = 1000
   'Module.Title.RetryTimes' = 3
   'Module.Title.Config' = (. {
-    $tmp = Get-TempPath
-    $moduleTemp = (Join-Path -Path $tmp -ChildPath 'xUtility')
-    if (-not (Test-Path $moduleTemp)) {
-      New-Item -ItemType Directory -Path $moduleTemp | Write-Verbose
-    }
-
+    $moduleTemp = Get-TempPath
     $configFile = 'SetTitle.txt'
     $configFile = Join-Path -Path $moduleTemp -ChildPath $configFile
     Write-Output $configFile
@@ -38,12 +37,7 @@ $Script:defaultConfig = @{
   'Module.ConsoleTransparency.RetryTimes' = 3
   'Module.ConsoleTransparency.DefaultLevel' = 220
   'Module.ConsoleTransparency.Config' = (. {
-    $tmp = Get-TempPath
-    $moduleTemp = (Join-Path -Path $tmp -ChildPath 'xUtility')
-    if (-not (Test-Path $moduleTemp)) {
-      New-Item -ItemType Directory -Path $moduleTemp | Write-Verbose
-    }
-
+    $moduleTemp = Get-TempPath
     $configFile = 'ConsoleTransparency.xml'
     $configFile = Join-Path -Path $moduleTemp -ChildPath $configFile
     Write-Output $configFile
@@ -67,17 +61,12 @@ $Script:defaultConfig = @{
     }
   })
 
-  'Module.Version' = ([Version] (. {
-    $tmp = Get-TempPath
-    $moduleTemp = (Join-Path -Path $tmp -ChildPath 'xUtility')
-    if (-not (Test-Path $moduleTemp)) {
-      New-Item -ItemType Directory -Path $moduleTemp | Write-Verbose
-    }
-    
+  'Module.Version' = [Version] (. {
+    $moduleTemp = Get-TempPath
     $manifest = Join-Path -Path $Script:ModuleHome -ChildPath 'xUtility.psd1'
     $tmpManifest = Join-Path -Path $moduleTemp -ChildPath 'xUtility.ps1'
     Copy-Item -Path $manifest -Destination $tmpManifest -Force
     $manifestData = . $tmpManifest
     Write-Output $manifestData.ModuleVersion
-  }))
+  })
 }

@@ -1,7 +1,14 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-**`v2.0.0`**
+**`v2.0.1`**
+
+```
+Major.Minor.Build
+  |     |     |_____ Small fixes
+  |     |___________ New features
+  |_________________ Major ship releases
+```
 
 ## What is PsxUtility?
 PxsUtility is a project for creating extended Utilities for PowerShell wrapping common functionality on `xUtility` module. 
@@ -34,7 +41,9 @@ This module is available for download from the [PowerShell Gallery](https://www.
 - [x] Display formatting cmdlets: Coloring words, rows
   - [New-ConsoleColorSet](https://github.com/hobelinm/PsxUtility/blob/master/Main/New-ConsoleColorSet.ps1)
   - [Out-ColorFormat](https://github.com/hobelinm/PsxUtility/blob/master/Main/Out-ColorFormat.ps1)
-- [ ] Automatic module updates, Additional Package Manager(?)
+- [x] Check for updates
+- [x] Inline progress function
+- [ ]Additional Package Manager(?)
 
 ## How to get it:
 - [xUtility in the PowerShell Gallery](https://www.powershellgallery.com/packages/xUtility)
@@ -48,7 +57,6 @@ PS> Import-Module -Name xUtility
 - Feature: Inline Progress `[### ] 75% [Caller]: Inline Message`
 - Write tests
 - Report upstream logging/analytics from all cmdlets
-- Automatic updates
 - Add post documentation for the multiple features
 
 Additional features will be added over time
@@ -56,5 +64,6 @@ Additional features will be added over time
 ## Change Log
 
 ````
+2.0.1 - Check for updates periodically, Write-InlineProgress cmdlet
 2.0.0 - Support for MacOS in addition to Windows OS
 ````

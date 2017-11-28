@@ -14,20 +14,66 @@ function isWindows {
 # Gets temp path according to the host
 function Get-TempPath {
   [CmdletBinding()]
-  param()
+  param(
+    [Parameter()]
+    [switch] $BasePath = $false
+  )
 
+  $location = ''
   if (isWindows) {
-    Write-Output $env:TEMP
+    $location = $env:TEMP
   }
   else {
-    Write-Output $env:TMPDIR
+    $location = $env:TMPDIR
   }
+
+  if ($BasePath) {
+    Write-Output $location
+  }
+  else {
+    $location = Join-Path -Path $location -ChildPath 'xUtility'
+    if (-not (Test-Path $location)) {
+      New-Item -ItemType Directory -Path $location | Write-Verbose
+    }
+  
+    Write-Output $location
+  }
+}
+
+# Returns the app data directory for each OS
+function Get-AppDataPath {
+  [CmdletBinding()]
+  param(
+    [Parameter()]
+    [switch] $BasePath = $false
+  )
+
+  $location = ''
+  if (isWindows) {
+    $location = $env:LOCALAPPDATA
+  }
+  else {
+    $location = '~/Library/Preferences/'
+  }
+
+  if (-not $BasePath) {
+    $location = Join-Path -Path $location -ChildPath 'xUtility'
+    if (-not (Test-Path $location)) {
+      New-Item -ItemType Directory -Path $location | Write-Verbose
+    }
+  }
+
+  Write-Output $location
 }
 
 # Pretty print
 function Print {
   [CmdletBinding()]
   param(
+    [Parameter()]
+    [ValidateNotNullOrEmpty()]
+    [string] $Header = [string]::Empty,
+
     [Parameter(Mandatory)]
     [string] $Message,
 
@@ -39,11 +85,18 @@ function Print {
   )
 
   Write-Host '[' -NoNewline
-  Write-Host 'xUtility' -ForegroundColor $Accent -NoNewline
-  $caller = (Get-PSCallStack)[1].FunctionName
-  if ($caller -ne '<ScriptBlock>') {
-    Write-Host '.' -NoNewline
-    Write-Host $caller -ForegroundColor $Accent -NoNewline
+  $caller = '<ScriptBlock>'
+  if ($Header -ne [string]::Empty) {
+    Write-Host $Header -ForegroundColor $Accent -NoNewline
+  }
+  else {
+    Write-Host 'xUtility' -ForegroundColor $Accent -NoNewline
+    $caller = (Get-PSCallStack)[1].FunctionName
+    
+    if ($caller -ne '<ScriptBlock>') {
+      Write-Host '.' -NoNewline
+      Write-Host $caller -ForegroundColor $Accent -NoNewline
+    }
   }
   
   if ($NoNewLine) {
