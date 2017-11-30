@@ -1,4 +1,4 @@
-# Util to determine the OS
+# Utils to determine the OS
 function isWindows {
   [CmdletBinding()]
   param()
@@ -9,6 +9,23 @@ function isWindows {
   else {
     Write-Output $false
   }
+}
+
+function isLinux {
+  [CmdletBinding()]
+  param()
+
+  if ($PSVersionTable -eq $null) {
+    Write-Output $false
+    return
+  }
+
+  if ($PSVersionTable.OS -match 'Linux') {
+    Write-Output $true
+    return
+  }
+
+  Write-Output $false
 }
 
 # Gets temp path according to the host
@@ -25,7 +42,7 @@ function Get-TempPath {
   }
   else {
     $location = $env:TMPDIR
-    if ($location -ne $null -and -not (Test-Path $location)) {
+    if ($location -eq $null -or -not (Test-Path $location)) {
       $location = '/tmp'
     }
   }
@@ -57,8 +74,8 @@ function Get-AppDataPath {
   }
   else {
     $location = '~/Library/Preferences/'
-    if ($location -ne $null -and -not (Test-Path $location)) {
-      $location = '~'
+    if ($location -eq $null -or -not (Test-Path $location)) {
+      $location = '~/.local/share/'
     }
   }
 

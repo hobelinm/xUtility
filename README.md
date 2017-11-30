@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-**`v2.0.3`**
+**`v2.0.4`**
 
 ```
 Major.Minor.Build
@@ -64,6 +64,7 @@ Additional features will be added over time
 ## Change Log
 
 ````
+2.0.4 - Fixed path composition logic, coloring for Linux terminals
 2.0.3 - Check for null before attempting to use the variable
 2.0.2 - Initial fixes to enhance compatibility with Linux OS
 2.0.1 - Check for updates periodically, Write-InlineProgress cmdlet

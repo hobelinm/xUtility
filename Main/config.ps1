@@ -12,6 +12,24 @@ $Script:defaultConfig = @{
   'Module.IsWindows' = . { isWindows }
   'Module.RetryBlock.PolicyTypeName' = 'System.xUtility.RetryPolicy'
   'Module.RetryBlock.RetryErrorId' = 'RetryLogicLimitReached'
+  'Module.Prompt.FolderSegmentColor' = (. {
+    $linuxOs = IsLinux
+    if ($linuxOs -eq $false) {
+      Write-Output 'DarkGray'
+    }
+    else {
+      Write-Output 'Gray'
+    }
+  })
+  'Module.Prompt.PathSeparatorColor' = (. {
+    $linuxOs = IsLinux
+    if ($linuxOs -eq $false) {
+      Write-Output 'White'
+    }
+    else {
+      Write-Output 'Blue'
+    }
+  })
   'Module.Prompt.PolicyName' = 'Random'
   'Module.Prompt.WaitTimeMSecs' = 1000
   'Module.Prompt.RetryTimes' = 3

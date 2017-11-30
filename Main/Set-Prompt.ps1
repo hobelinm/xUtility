@@ -121,9 +121,11 @@ function Set-Prompt {
 
     $val = Get-ExpiringCacheItem -Key $callbackKey
     Write-Host "[ " -ForegroundColor Cyan -NoNewLine
+    $folderSegmentColor = GetConfig('Module.Prompt.FolderSegmentColor')
+    $pathSeparator = GetConfig('Module.Prompt.PathSeparatorColor')
     $PWD.Path.Split($joinChar) | Where-Object { $_ -ne '' } | ForEach-Object {
-        Write-Host $_ -NoNewLine -ForegroundColor DarkGray
-        Write-Host $joinChar -NoNewLine -ForegroundColor White
+        Write-Host $_ -NoNewLine -ForegroundColor $folderSegmentColor
+        Write-Host $joinChar -NoNewLine -ForegroundColor $pathSeparator
     }
 
     Write-Host " ]" -ForegroundColor Cyan
