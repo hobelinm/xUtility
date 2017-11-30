@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-**`v2.0.1`**
+**`v2.0.2`**
 
 ```
 Major.Minor.Build
@@ -64,6 +64,7 @@ Additional features will be added over time
 ## Change Log
 
 ````
+2.0.2 - Initial fixes to enhance compatibility with Linux OS
 2.0.1 - Check for updates periodically, Write-InlineProgress cmdlet
 2.0.0 - Support for MacOS in addition to Windows OS
 ````

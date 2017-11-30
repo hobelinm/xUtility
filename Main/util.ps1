@@ -25,6 +25,9 @@ function Get-TempPath {
   }
   else {
     $location = $env:TMPDIR
+    if (-not (Test-Path $location)) {
+      $location = '/tmp'
+    }
   }
 
   if ($BasePath) {
@@ -54,6 +57,9 @@ function Get-AppDataPath {
   }
   else {
     $location = '~/Library/Preferences/'
+    if (-not (Test-Path $location)) {
+      $location = '~'
+    }
   }
 
   if (-not $BasePath) {
