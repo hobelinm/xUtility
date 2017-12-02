@@ -1,6 +1,7 @@
 $Script:defaultConfig = @{
+  'Module.ExpiringCache.CacheType' = 'System.xUtility.ExpiringCache'
   'Module.InlineProgress.BarSize' = 4
-  'Module.InlineProgress.Bars' = @('#', '*', '+', '|')
+  'Module.InlineProgress.Bars' = @('#', '*', '+', 'o')
   'Module.PackageVersionUrl' = 'https://raw.githubusercontent.com/hobelinm/PsxUtility/master/package.json'
   'Module.UpdateCheckSpan' = [TimeSpan] '30.00:00:00'
   'Module.VersionTraceFile' = (. {
@@ -21,15 +22,7 @@ $Script:defaultConfig = @{
       Write-Output 'Gray'
     }
   })
-  'Module.Prompt.PathSeparatorColor' = (. {
-    $linuxOs = IsLinux
-    if ($linuxOs -eq $false) {
-      Write-Output 'White'
-    }
-    else {
-      Write-Output 'Blue'
-    }
-  })
+  'Module.Prompt.PathSeparatorColor' = 'White'
   'Module.Prompt.PolicyName' = 'Random'
   'Module.Prompt.WaitTimeMSecs' = 1000
   'Module.Prompt.RetryTimes' = 3

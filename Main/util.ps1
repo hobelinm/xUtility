@@ -145,3 +145,10 @@ function GetConfig {
   # Use ConfigHive to retrieve data, otherwise use default configuration data
   Write-Output $Script:defaultConfig[$Key]
 }
+
+
+# Expiring cache item trigger types
+enum ExpiringCacheItemType {
+  TimeSpanTrigger
+  CustomTrigger
+}

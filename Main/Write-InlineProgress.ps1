@@ -42,10 +42,12 @@ function Write-InlineProgress {
     [ValidateNotNullOrEmpty()]
     [string] $Header = [string]::Empty,
 
+    # Message to display
     [Parameter(Mandatory, ValueFromPipelineByPropertyName, ValueFromPipeline)]
     [ValidateNotNullOrEmpty()]
     [string] $Message,
 
+    # Percentage to display in the bar
     [Parameter(ValueFromPipelineByPropertyName)]
     [ValidateScript({ $_ -ge 0 -and $_ -le 100 })]
     [int] $Percentage = -1
@@ -117,6 +119,6 @@ function Write-InlineProgress {
   }
 
   end {
-    Write-Host ""
+    Write-Host ''
   }
 }
