@@ -15,6 +15,7 @@ $preloadScripts = @(
 
 $preloadScripts | ForEach-Object {
   $preloadScript = Join-Path -Path $mainFolder -ChildPath $_
+  . $preloadScript
 }
 
 if (-not (Test-Path (GetConfig('Module.WorkPath')))) {

@@ -1,11 +1,11 @@
 # Module Error Categories
 enum xUtilityErrorCategory {
-  CacheKeyNotFound,
-  InsufficientPermission,
-  InvalidCacheKey,
-  InvalidImplementation,
-  InvalidParameter,
-  InvalidRetryLogicEvaluation,
+  CacheKeyNotFound
+  InsufficientPermission
+  InvalidCacheKey
+  InvalidImplementation
+  InvalidParameter
+  InvalidRetryLogicEvaluation
   MaxRetryLimitReached
 }
 

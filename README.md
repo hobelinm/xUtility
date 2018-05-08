@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-Version: **`v2.0.6`**
+Version: **`v2.0.7`**
 Release: **`2-1B`**
 
 ```
@@ -71,6 +71,7 @@ Additional features will be added over time
 
 ````
 Version - Release - Description
+2.0.7   - 2-1B    - Fixed pre-load script logic
 2.0.6   - 2-1B    - Custom error class
 2.0.5   - 2-1B    - Updated expiring cache to support custom cache refresh triggering via [ScriptBlock]
 2.0.4   - 2-1B    - Fixed path composition logic, coloring for Linux terminals
