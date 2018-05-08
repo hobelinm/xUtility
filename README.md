@@ -1,8 +1,8 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-Version: **`v2.0.8`**
-Release: **`2-1B`**
+Version: **`v2.1.0`**
+Release: **`4-LOM`**
 
 ```
 Major.Minor.Build
@@ -64,6 +64,7 @@ PS> Import-Module -Name xUtility
 * Users are able to contribute to repository
 - Format-Table equivalent with real-time user provided updates
 - Write tests
+- Retry policy objects should be classes now
 
 Additional features will be added over time
 
@@ -71,6 +72,7 @@ Additional features will be added over time
 
 ````
 Version - Release - Description
+2.1.0   - 4-LOM   - Minor fixes released for PowerShell gallery
 2.0.8   - 2-1B    - Created OS-independent functions for getting Temp and AppData folders
 2.0.7   - 2-1B    - Fixed pre-load script logic
 2.0.6   - 2-1B    - Custom error class
