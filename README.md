@@ -1,13 +1,13 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-Version: **`v2.0.7`**
+Version: **`v2.0.8`**
 Release: **`2-1B`**
 
 ```
 Major.Minor.Build
   |     |     |_____ Small fixes
-  |     |___________ New features
+  |     |___________ New features, publish to PowerShell gallery
   |_________________ Major ship releases
 ```
 
@@ -71,6 +71,7 @@ Additional features will be added over time
 
 ````
 Version - Release - Description
+2.0.8   - 2-1B    - Created OS-independent functions for getting Temp and AppData folders
 2.0.7   - 2-1B    - Fixed pre-load script logic
 2.0.6   - 2-1B    - Custom error class
 2.0.5   - 2-1B    - Updated expiring cache to support custom cache refresh triggering via [ScriptBlock]

@@ -51,7 +51,7 @@ function isLinux {
 }
 
 # Gets temp path according to the host
-function Get-TempPath {
+function GetTempPath {
   [CmdletBinding()]
   param(
     [Parameter()]
@@ -83,7 +83,7 @@ function Get-TempPath {
 }
 
 # Returns the app data directory for each OS
-function Get-AppDataPath {
+function GetAppDataPath {
   [CmdletBinding()]
   param(
     [Parameter()]

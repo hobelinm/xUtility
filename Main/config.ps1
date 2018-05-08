@@ -5,7 +5,7 @@ $Script:defaultConfig = @{
   'Module.PackageVersionUrl' = 'https://raw.githubusercontent.com/hobelinm/PsxUtility/master/package.json'
   'Module.UpdateCheckSpan' = [TimeSpan] '30.00:00:00'
   'Module.VersionTraceFile' = (. {
-    $appData = Get-AppDataPath
+    $appData = GetAppDataPath
     $traceFile = Join-Path -Path $appData -ChildPath 'PublishedVersion.xml'
     Write-Output $traceFile
   })
@@ -29,7 +29,7 @@ $Script:defaultConfig = @{
   'Module.Prompt.CallbackCacheKey' = 'SetPromptCustomCallback'
   'Module.Prompt.CallbackExpiration' = [TimeSpan] '0:0:5'
   'Module.Prompt.CallbackFile' = (. {
-    $moduleTemp = Get-TempPath
+    $moduleTemp = GetTempPath
     $configFile = 'SetPrompt.xml'
     $configFile = Join-Path -Path $moduleTemp -ChildPath $configFile
     Write-Output $configFile
@@ -38,7 +38,7 @@ $Script:defaultConfig = @{
   'Module.Title.WaitTimeMSecs' = 1000
   'Module.Title.RetryTimes' = 3
   'Module.Title.Config' = (. {
-    $moduleTemp = Get-TempPath
+    $moduleTemp = GetTempPath
     $configFile = 'SetTitle.txt'
     $configFile = Join-Path -Path $moduleTemp -ChildPath $configFile
     Write-Output $configFile
@@ -48,7 +48,7 @@ $Script:defaultConfig = @{
   'Module.ConsoleTransparency.RetryTimes' = 3
   'Module.ConsoleTransparency.DefaultLevel' = 220
   'Module.ConsoleTransparency.Config' = (. {
-    $moduleTemp = Get-TempPath
+    $moduleTemp = GetTempPath
     $configFile = 'ConsoleTransparency.xml'
     $configFile = Join-Path -Path $moduleTemp -ChildPath $configFile
     Write-Output $configFile
@@ -73,7 +73,7 @@ $Script:defaultConfig = @{
   })
 
   'Module.Version' = [Version] (. {
-    $moduleTemp = Get-TempPath
+    $moduleTemp = GetTempPath
     $manifest = Join-Path -Path $Script:ModuleHome -ChildPath 'xUtility.psd1'
     $tmpManifest = Join-Path -Path $moduleTemp -ChildPath 'xUtility.ps1'
     Copy-Item -Path $manifest -Destination $tmpManifest -Force
