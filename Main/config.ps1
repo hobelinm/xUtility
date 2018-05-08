@@ -56,11 +56,11 @@ $Script:defaultConfig = @{
   'Module.ConsoleColorSetTypeName' = 'System.xUtility.ConsoleColorSet'
   'Module.AccentColor' = 'Cyan'
   'Module.WindowsOnlyScripts' = @(
-    'Invoke-PSCommand',
-    'Set-ConsoleTransparency',
-    'Set-SymbolicLinkBehavior',
-    'Set-WindowSize',
-    'Test-AdminRights'
+    'Invoke-PSCommand.ps1',
+    'Set-ConsoleTransparency.ps1',
+    'Set-SymbolicLinkBehavior.ps1',
+    'Set-WindowSize.ps1',
+    'Test-AdminRights.ps1'
   )
 
   'Module.WorkPath' = (. {

@@ -25,7 +25,11 @@ function Get-ExpiringCacheItem {
 
     $ErrorActionPreference = 'Stop'
     if (-not $Script:expiringCacheObjects.Contains($Key)) {
-        Write-Error "Item with key '$Key' was not found in the cache"
+        throw [xUtilityException]::New(
+            "Get-ExpiringCacheItem",
+            [xUtilityErrorCategory]::CacheKeyNotFound,
+            "Item with key '$Key' was not found in the cache"
+        )
     }
 
     $cachedItem = $script:expiringCacheObjects[$Key]

@@ -36,14 +36,14 @@ will be attempted 3 times according to the policy defined.
 function Invoke-ScriptBlockWithRetry {
 	[CmdletBinding()]
 	param(
+        # Context to execute
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        # Context to execute
         [ScriptBlock] $Context,
-
+        
+        # Retry policy determines wait time, whether wait follows any pattern, and the types of exceptions to under which will retry
         [Parameter(Mandatory)]
         [ValidateScript({ $_.PSTypeNames[0] -eq (GetConfig('Module.RetryBlock.PolicyTypeName')) })]
-        # Retry policy determines wait time, whether wait follows any pattern, and the types of exceptions to under which will retry
         $RetryPolicy
         )
 
@@ -90,7 +90,10 @@ function Invoke-ScriptBlockWithRetry {
                     
                     $retryLimitErrorId = GetConfig('Module.RetryBlock.RetryErrorId')
                     if ($e2.FullyQualifiedErrorId -ne $retryLimitErrorId) {
-                        Write-Error -Message ("Error during RetryLogicEvaluation: {0}" -f $e2) -ErrorId 'InvalidRetryLogicEvaluation'
+                        throw new [xUtilityException]::New(
+                            'Invoke-ScriptBlockWithRetry',
+                            [xUtilityErrorCategory]::InvalidRetryLogicEvaluation,
+                            ("Error during RetryLogicEvaluation: {0}" -f $e2))
                     }
                     else {
                         Write-Verbose "Reached Retry Limit: $e2"

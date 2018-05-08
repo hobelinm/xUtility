@@ -1,7 +1,8 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-**`v2.0.5`**
+Version: **`v2.0.6`**
+Release: **`2-1B`**
 
 ```
 Major.Minor.Build
@@ -54,20 +55,27 @@ PS> Import-Module -Name xUtility
 ````
 
 ## TO DO Items:
-- Feature: Inline Progress `[### ] 75% [Caller]: Inline Message`
-- Write tests
+- Leverage/integrate ConfigHive when possible
 - Report upstream logging/analytics from all cmdlets
 - Add post documentation for the multiple features
+- Repository and plugins for customizable prompts
+* Users are able to discover and install custom prompts with provided cmdlets
+* Provide few examples like Git based custom prompts
+* Users are able to contribute to repository
+- Format-Table equivalent with real-time user provided updates
+- Write tests
 
 Additional features will be added over time
 
 ## Change Log
 
 ````
-2.0.5 - Updated expiring cache to support custom cache refresh triggering via [ScriptBlock]
-2.0.4 - Fixed path composition logic, coloring for Linux terminals
-2.0.3 - Check for null before attempting to use the variable
-2.0.2 - Initial fixes to enhance compatibility with Linux OS
-2.0.1 - Check for updates periodically, Write-InlineProgress cmdlet
-2.0.0 - Support for MacOS in addition to Windows OS
+Version - Release - Description
+2.0.6   - 2-1B    - Custom error class
+2.0.5   - 2-1B    - Updated expiring cache to support custom cache refresh triggering via [ScriptBlock]
+2.0.4   - 2-1B    - Fixed path composition logic, coloring for Linux terminals
+2.0.3   - 2-1B    - Check for null before attempting to use the variable
+2.0.2   - 2-1B    - Initial fixes to enhance compatibility with Linux OS
+2.0.1   - 2-1B    - Check for updates periodically, Write-InlineProgress cmdlet
+2.0.0   - 2-1B    - Support for MacOS in addition to Windows OS
 ````

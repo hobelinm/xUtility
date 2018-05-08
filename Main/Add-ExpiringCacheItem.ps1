@@ -59,7 +59,11 @@ function Add-ExpiringCacheItem {
 
     $ErrorActionPreference = 'Stop'
     if ($script:expiringCacheObjects.Contains($Key) -and -not $Force) {
-        Write-Error "Cache already contains an object with key '$Key'"
+        throw [xUtilityException]::New(
+            'Add-ExpiringCacheItem',
+            [xUtilityErrorCategory]::InvalidCacheKey,
+            "Cache already contains an object with key '$Key'"
+        )
     }
 
     $cacheType = GetConfig('Module.ExpiringCache.CacheType')

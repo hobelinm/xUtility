@@ -8,30 +8,32 @@ $script:expiringCacheObjects = @{}
 $mainFolder = Join-Path -Path $Script:ModuleHome -ChildPath "Main"
 
 # Load Utilities and configuration first
-. (Join-Path -Path $mainFolder -ChildPath 'util.ps1')
-. (Join-Path -Path $mainFolder -ChildPath 'config.ps1')
+$preloadScripts = @(
+  'util.ps1',
+  'config.ps1'
+)
+
+$preloadScripts | ForEach-Object {
+  $preloadScript = Join-Path -Path $mainFolder -ChildPath $_
+}
 
 if (-not (Test-Path (GetConfig('Module.WorkPath')))) {
   New-Item -ItemType Directory -Path (GetConfig('Module.WorkPath')) | Write-Verbose
 }
 
 # Load cmdlets
-$skipFileList = @()
-$skipFileList += 'config'
-$skipFileList += 'util'
-
 if ((GetConfig('Module.IsWindows')) -eq $false) {
-  $skipFileList += GetConfig('Module.WindowsOnlyScripts')
+  $preloadScripts += GetConfig('Module.WindowsOnlyScripts')
 }
 
 # When integrated with PsConfigHive module allows to skip custom prompt if Config module is already loaded
 if ((GetConfig('Module.NoCustomPrompt')) -eq $true) {
-  $skipFileList += 'Set-Prompt'
+  $preloadScripts += 'Set-Prompt.ps1'
 }
 
 # Load all functions
 Get-ChildItem -Filter '*.ps1' -Recurse -Path $mainFolder | Where-Object {
-  $skipFileList.Contains($_.BaseName) -eq $false
+  $preloadScripts.Contains($_.Name) -eq $false
 } | ForEach-Object {
   . ($_.FullName)
 }

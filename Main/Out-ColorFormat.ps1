@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-	Display specific words or rows in given colors
+    Display specific words or rows in given colors
 
 .DESCRIPTION
-	Takes a string as input and displays the given words in
-	the specified color. Or rows in a series of given colors
+    Takes a string as input and displays the given words in
+    the specified color. Or rows in a series of given colors
 
 .EXAMPLE
 PS> $cs = @()
@@ -30,8 +30,8 @@ ones specified on the dictionary
 #>
 
 function Out-ColorFormat {
-	[CmdletBinding(DefaultParameterSetName = "Word")]
-	param(
+    [CmdletBinding(DefaultParameterSetName = "Word")]
+    param(
         [Parameter(Mandatory, ValueFromPipeline, ParameterSetName = "Word")]
         [Parameter(Mandatory, ValueFromPipeline, ParameterSetName = "Row")]
         [string] $RawLine = "",

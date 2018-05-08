@@ -1,3 +1,25 @@
+# Module Error Categories
+enum xUtilityErrorCategory {
+  CacheKeyNotFound,
+  InsufficientPermission,
+  InvalidCacheKey,
+  InvalidImplementation,
+  InvalidParameter,
+  InvalidRetryLogicEvaluation,
+  MaxRetryLimitReached
+}
+
+# Custom error class
+class xUtilityException : System.Exception {
+  xUtilityException(
+    [string] $methodName,
+    [xUtilityErrorCategory] $category,
+    [string] $message
+  ) : base(("[{0}:{1}] {2}" -f $methodName, $category, $message)) {
+    # Error message is handled by System.Exception
+  }
+}
+
 # Utils to determine the OS
 function isWindows {
   [CmdletBinding()]

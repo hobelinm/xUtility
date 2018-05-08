@@ -81,7 +81,11 @@ function Invoke-PSCommand {
     [System.Diagnostics.Process]::Start($powerShellProcess)
     if (-not $?) {
         Write-Warning "This script requires administrative privileges. Retry using administrative privileges."
-        Write-Error $_
+        throw [xUtilityException]::New(
+            "Invoke-PSCommand",
+            [xUtilityErrorCategory]::InsufficientPermission,
+            $_
+        )
     }
 }
 
