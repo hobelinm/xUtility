@@ -13,7 +13,7 @@ $cs += (New-ConsoleColorSet -ForegroundColor Yellow)
 $cs += (New-ConsoleColorSet -ForegroundColor Red)
 $cs += (New-ConsoleColorSet -ForegroundColor White)
 Windows:
-dir E:\ | Out-String | % { $_ -split "`r`n" } | ? {$_ -ne ""} | Out-ColorFormat -RowColorSet $cs
+dir E:\ | Out-String | % { $_ -split "`r`n" } | ? {$_ -ne ""} | Out-ColorFormat -FormatDefinition $cs
 Mac OS:
 dir ~ | Out-String | %{$_ -split "`n"}|?{$_ -ne ''}| Out-ColorFormat -FormatDefinition $cs
 
@@ -27,7 +27,7 @@ $colorDict += New-ConsoleColorSet -ForegroundColor Green -Word 'dev'
 $colorDict += New-ConsoleColorSet -ForegroundColor Cyan -Word 'Repos'
 $colorDict += New-ConsoleColorSet -ForegroundColor Red -Word 'log'
 Window:
-dir E:\ | Out-String |%{ $_ -split "`r`n" }|?{$_ -ne ""}| Out-ColorFormat -WordColorSet $colorDict
+dir E:\ | Out-String |%{ $_ -split "`r`n" }|?{$_ -ne ""}| Out-ColorFormat -FormatDefinition $colorDict
 Mac OS:
 dir ~ | Out-String | %{$_ -split "`n"}|?{$_ -ne ''}| Out-ColorFormat -FormatDefinition $colorDict
 
