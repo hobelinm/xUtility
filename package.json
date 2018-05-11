@@ -1,7 +1,7 @@
 {
     "name": "ps-xutilities",
-    "version": "2.1.0",
-    "description": "Extended Utilities for PowerShell",
+    "version": "2.1.1",
+    "description": "[4-LOM] Updated New-ConsoleColorSet and Out-ColorFormat, initial introduction of class based Retry policies",
     "preferGlobal": true,
     "author": "Hugo Belin",
     "keywords": [
@@ -11,7 +11,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/hobelinm/PsxUtility.git"
+        "url": "https://github.com/hobelinm/xUtility.git"
     },
     "license": "SEE LICENSE IN LICENSE"
 }

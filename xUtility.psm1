@@ -10,7 +10,8 @@ $mainFolder = Join-Path -Path $Script:ModuleHome -ChildPath "Main"
 # Load Utilities and configuration first
 $preloadScripts = @(
   'util.ps1',
-  'config.ps1'
+  'config.ps1',
+  'RetryPolicies\BaseRetryPolicy.ps1'
 )
 
 $preloadScripts | ForEach-Object {
@@ -55,12 +56,14 @@ else {
 
 $warnVersion = $false
 $latestVersion = $null
+$features = $null
 if ($checkVersion) {
   $thisVersion = [Version] (GetConfig('Module.Version'))
   $versionUrl = GetConfig('Module.PackageVersionUrl')
   $response = Invoke-WebRequest -Uri $versionUrl
   $package = $response.Content | ConvertFrom-Json
   $latestVersion = [Version] $package.version
+  $features = $package.description
   if ($latestVersion -gt $thisVersion) {
     $warnVersion = $true
   }
@@ -73,6 +76,8 @@ if ($checkVersion) {
 # Print load message
 Print -Message 'xUtility v' -NoNewLine
 $mVersion = (GetConfig('Module.Version')).ToString().Split('.')
+$message = "[xUtility] v$mVersion"
+
 $idx = 0
 $mVersion | ForEach-Object {
   $digit = $_
@@ -86,6 +91,9 @@ $mVersion | ForEach-Object {
 
 if ($warnVersion) {
   Write-Host ''
-  $m = "Update to v{0} to get access to the latest features" -f $latestVersion
+  $m = "Update to v{0} to get access to the latest features:" -f $latestVersion
   Print -Message $m -Accent 'Yellow'
+  Print -Message $features -Accent 'Yellow'
 }
+
+Write-Host ''

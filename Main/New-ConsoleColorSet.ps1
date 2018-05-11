@@ -1,11 +1,11 @@
 <#
 .SYNOPSIS
-	Creates a color set object. Foreground and background.
+    Creates a color set object. Foreground, background with optional word matching.
 
 .DESCRIPTION
-    Creates a pair foreground and background color which
-    express a given console format color to use with
-    Out-ColorFormat cmdlet.
+    Creates a custom object that defines specifications for using specific foreground and background colors as well as
+    any word matching. All parameters are optional, specifying a word will match this combination with the given word,
+    otherwise this object will be used for the entire row
 
 .EXAMPLE
 PS> New-ConsoleColorSet -ForegroundColor Yellow
@@ -19,29 +19,61 @@ Returns an object which express a background color as Black
 PS> New-ConsoleColorSet -ForegroundColor Yellow -BackgroundColor Black
 Returns an object which express Yellow foreground and black background colors
 
+.EXAMPLE
+PS> New-ConsoleColorSet -Foreground Red -Word 'Error'
+Returns an object that will be used to mark the words 'Error' as Red
+
 #>
 
 function New-ConsoleColorSet {
-	[CmdletBinding()]
-	param(
+    [CmdletBinding()]
+    param(
         [Parameter()]
         [System.ConsoleColor] $ForegroundColor,
 
         [Parameter()]
-        [System.ConsoleColor] $BackgroundColor
+        [System.ConsoleColor] $BackgroundColor,
+
+        [Parameter()]
+        [ValidateNotNullOrEmpty()]
+        [string] $Word = [string]::Empty
         )
 
-    $consoleColorSetTable = @{}
+    $colorSet = [ConsoleColorSet]::new()
     if ($PsBoundParameters.Keys -contains 'ForegroundColor') {
-        $consoleColorSetTable['ForegroundColor'] = $ForegroundColor
+        $colorSet.ForegroundColor = $ForegroundColor
+        $colorSet.SetType = [ColorSetType]::Foreground
     }
 
     if ($PsBoundParameters.Keys -contains 'BackgroundColor') {
-        $consoleColorSetTable['BackgroundColor'] = $BackgroundColor
+        $colorSet.BackgroundColor = $BackgroundColor
+        $colorSet.SetType = [ColorSetType]::Background
     }
 
-    $consoleColorSet = [PSCustomObject] $consoleColorSetTable
-    $val = GetConfig('Module.ConsoleColorSetTypeName')
-    $consoleColorSet.PSTypeNames.Insert(0, $val)
-    Write-Output $consoleColorSet
+    if ($PsBoundParameters.Keys -contains 'ForegroundColor' -and 
+        $PsBoundParameters.Keys -ccontains 'BackgroundColor') {
+        $colorSet.SetType = [ColorSetType]::Both
+    }
+
+    if ($PsBoundParameters.Keys -contains 'Word') {
+        $colorSet.Word = $Word
+    }
+    else {
+        $colorSet.Word = [string]::Empty
+    }
+
+    Write-Output $colorSet
+}
+
+enum ColorSetType {
+    Foreground
+    Background
+    Both
+}
+
+class ConsoleColorSet {
+    [System.ConsoleColor] $ForegroundColor
+    [System.ConsoleColor] $BackgroundColor
+    [ColorSetType] $SetType
+    [string] $Word
 }

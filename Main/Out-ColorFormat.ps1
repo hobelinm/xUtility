@@ -7,22 +7,29 @@
     the specified color. Or rows in a series of given colors
 
 .EXAMPLE
-PS> $cs = @()
-PS> $cs += (New-ConsoleColorSet -ForegroundColor Green)
-PS> $cs += (New-ConsoleColorSet -ForegroundColor Yellow)
-PS> $cs += (New-ConsoleColorSet -ForegroundColor Red)
-PS> $cs += (New-ConsoleColorSet -ForegroundColor White)
-PS> dir E:\ | Out-String | % { $_ -split "`r`n" } | ? {$_ -ne ""} | Out-ColorFormat -RowColorSet $cs
+$cs = @()
+$cs += (New-ConsoleColorSet -ForegroundColor Green)
+$cs += (New-ConsoleColorSet -ForegroundColor Yellow)
+$cs += (New-ConsoleColorSet -ForegroundColor Red)
+$cs += (New-ConsoleColorSet -ForegroundColor White)
+Windows:
+dir E:\ | Out-String | % { $_ -split "`r`n" } | ? {$_ -ne ""} | Out-ColorFormat -RowColorSet $cs
+Mac OS:
+dir ~ | Out-String | %{$_ -split "`n"}|?{$_ -ne ''}| Out-ColorFormat -FormatDefinition $cs
 
 Displays the contents of E: in the specified set of row color formants
 
 .EXAMPLE
-PS> $colorDict = @{}
-PS> $colorDict['AM'] = New-ConsoleColorSet -ForegroundColor Black -BackgroundColor White
-PS> $colorDict['PM'] = New-ConsoleColorSet -ForegroundColor White -BackgroundColor Black
-PS> $colorDict['dev'] = New-ConsoleColorSet -ForegroundColor Green
-PS> $colorDict['repos'] = New-ConsoleColorSet -ForegroundColor Cyan
-PS> dir E:\ | Out-String |%{ $_ -split "`r`n" }|?{$_ -ne ""}| Out-ColorFormat -WordColorSet $colorDict
+$colorDict = @()
+$colorDict += New-ConsoleColorSet -ForegroundColor Black -BackgroundColor White -Word 'AM'
+$colorDict += New-ConsoleColorSet -ForegroundColor White -BackgroundColor Black -Word 'PM'
+$colorDict += New-ConsoleColorSet -ForegroundColor Green -Word 'dev'
+$colorDict += New-ConsoleColorSet -ForegroundColor Cyan -Word 'Repos'
+$colorDict += New-ConsoleColorSet -ForegroundColor Red -Word 'log'
+Window:
+dir E:\ | Out-String |%{ $_ -split "`r`n" }|?{$_ -ne ""}| Out-ColorFormat -WordColorSet $colorDict
+Mac OS:
+dir ~ | Out-String | %{$_ -split "`n"}|?{$_ -ne ''}| Out-ColorFormat -FormatDefinition $colorDict
 
 Displays the contents of E: and replaces the format of the words AM, PM, dev, repos with the 
 ones specified on the dictionary
@@ -30,21 +37,18 @@ ones specified on the dictionary
 #>
 
 function Out-ColorFormat {
-    [CmdletBinding(DefaultParameterSetName = "Word")]
+    [CmdletBinding()]
     param(
-        [Parameter(Mandatory, ValueFromPipeline, ParameterSetName = "Word")]
-        [Parameter(Mandatory, ValueFromPipeline, ParameterSetName = "Row")]
+        [Parameter(Mandatory, ValueFromPipeline)]
         [string] $RawLine = "",
 
-        [Parameter(Mandatory, ParameterSetName = "Row")]
-        [ValidateScript({ ValidateRowColorSet -ValidateObject $_ })]
-        [PSCustomObject[]] $RowColorSet,
-
-        [Parameter(Mandatory, ParameterSetName = "Word")]
-        [ValidateScript({ ValidateWordColorSet -ValidateObject $_ })]
-        [HashTable] $WordColorSet
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [ConsoleColorSet[]] $FormatDefinition
         )
     begin {
+        $schemeType = $null
+        $wordColorSet = $null
         $rowIndex = 0
     }
     
@@ -54,31 +58,42 @@ function Out-ColorFormat {
             $line = $RawLine
         }
 
-        if ($PsBoundParameters['RowColorSet'] -ne $null) {
-            $whProperties = @{
-                Object = $line
-            }
+        if ($schemeType -eq $null) {
+            $schemeType = ValidateFormatDefinition -FormatSet $FormatDefinition
+        }
 
-            if ($RowColorSet[$rowIndex].ForegroundColor -ne $null) {
-                $whProperties['ForegroundColor'] = $RowColorSet[$rowIndex].ForegroundColor
+        if ($schemeType -eq [ColorMatchingScheme]::Rows) {
+            $whProperties = @{
+                'Object' = $line
             }
             
-            if ($RowColorSet[$rowIndex].BackgroundColor -ne $null) {
-                $whProperties['BackgroundColor'] = $RowColorSet[$rowIndex].BackgroundColor
+            $lineFormat = $FormatDefinition[$rowIndex]
+            if ($lineFormat.SetType -eq [ColorSetType]::Foreground -or 
+                $lineFormat.SetType -eq [ColorSetType]::Both) {
+                $whProperties['ForegroundColor'] = $lineFormat.ForegroundColor
+            }
+            
+            if ($lineFormat.SetType -eq [ColorSetType]::Background -or 
+                $lineFormat.SetType -eq [ColorSetType]::Both) {
+                $whProperties['BackgroundColor'] = $lineFormat.BackgroundColor
             }
 
             Write-Host @whProperties
             $rowIndex = $rowIndex + 1
-            if ($rowIndex -ge $RowColorSet.Count) {
+            if ($rowIndex -ge $FormatDefinition.Count) {
                 $rowIndex = 0
             }
         }
         else {
             while ($line -ne "") {
+                if ($wordColorSet -eq $null) {
+                    $wordColorSet = GetWordSet -FormatSet $FormatDefinition
+                }
+
                 # For the given string, get the lowest index of the match words
                 $lowestColorIndex = $line.Length
                 $lowestColorWord = ""
-                $WordColorSet.Keys | ForEach-Object {
+                $wordColorSet.Keys | ForEach-Object {
                     $colorWord = $_
                     $tentativeIndex = $line.IndexOf($colorWord)
                     if ($tentativeIndex -ne -1 -and $tentativeIndex -lt $lowestColorIndex) {
@@ -109,12 +124,17 @@ function Out-ColorFormat {
                         NoNewLine = $true
                     }
 
-                    if ($WordColorSet[$lowestColorWord].ForegroundColor -ne $null) {
-                        $printData['ForegroundColor'] = $WordColorSet[$lowestColorWord].ForegroundColor
+                    $colorData = $wordColorSet[$lowestColorWord]
+                    if ($colorData.SetType -eq [ColorSetType]::Foreground -or
+                        $colorData.SetType -eq [ColorSetType]::Both
+                    ) {
+                        $printData['ForegroundColor'] = $colorData.ForegroundColor
                     }
 
-                    if ($WordColorSet[$lowestColorWord].BackgroundColor -ne $null) {
-                        $printData['BackgroundColor'] = $WordColorSet[$lowestColorWord].BackgroundColor
+                    if ($colorData.SetType -eq [ColorSetType]::Background -or
+                        $colorData.SetType -eq [ColorSetType]::Both
+                    ) {
+                        $printData['BackgroundColor'] = $colorData.BackgroundColor
                     }
 
                     Write-Host @printData
@@ -130,40 +150,67 @@ function Out-ColorFormat {
     }
 }
 
-function ValidateRowColorSet {
+enum ColorMatchingScheme {
+    Rows
+    Words
+}
+
+function ValidateFormatDefinition {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [PSCustomObject[]] $ValidateObject
-        )
+        [ValidateNotNullOrEmpty()]
+        [ConsoleColorSet[]] $FormatSet
+    )
 
-    $ValidateObject | ForEach-Object {
-        $lineColorSet = $_
-        $colorType = GetConfig('Module.ConsoleColorSetTypeName')
-        if ($lineColorSet.PSTypeNames[0] -ne $colorType) {
-            throw ("Object of type [{0}] does not correspond to required type {1}" -f 
-                $lineColorSet.PSTypeNames[0], $colorType)
+    $matchingType = $null
+    $wordList = @{}
+    $FormatSet | ForEach-Object { 
+        $colorSet = $_
+        if ($colorSet.Word -ne [string]::Empty) {
+            if ($matchingType -eq $null) {
+                $matchingType = ([ColorMatchingScheme]::Words)
+            }
+
+            if ($matchingType -ne ([ColorMatchingScheme]::Words)) {
+                throw [xUtilityException]::New(
+                    "Out-ColorFormat.ValidateFormatDefinition",
+                    [xUtilityErrorCategory]::InconsistentMatchingTypes,
+                    "All entries have to be matching by the same comparison: rows or words"
+                )
+            }
+
+            if ($wordList[$colorSet.Word] -ne $null) {
+                throw [xUtilityException]::New(
+                    "Out-ColorFormat.ValidateFormatDefinition",
+                    [xUtilityErrorCategory]::DuplicateMatchingCriteria,
+                    "Filtering by word: word to match has to be unique"
+                )
+            }
+
+            $wordList[$colorSet.Word] = $true
         }
     }
 
-    return $true
+    if ($matchingType -eq $null) {
+        $matchingType = ([ColorMatchingScheme]::Rows)
+    }
+    
+    Write-Output $matchingType
 }
 
-function ValidateWordColorSet {
+function GetWordSet {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
-        [HashTable] $ValidateObject
-        )
+        [ConsoleColorSet[]] $FormatSet
+    )
 
-    if ($ValidateObject.Keys -eq 0) {
-        throw "WordColorSet cannot be empty"
+    $customWordSet = @{}
+    $FormatSet | ForEach-Object {
+        $colorSet = $_
+        $customWordSet[$colorSet.Word] = $colorSet
     }
 
-    $colorSets = @()
-    $ValidateObject.Keys | ForEach-Object {
-        $colorSets += $ValidateObject[$_]
-    }
-
-    return (ValidateRowColorSet -ValidateObject $colorSets)
+    Write-Output $customWordSet
 }

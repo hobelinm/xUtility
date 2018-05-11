@@ -1,12 +1,23 @@
 # Module Error Categories
 enum xUtilityErrorCategory {
   CacheKeyNotFound
+  DuplicateMatchingCriteria
+  InconsistentMatchingTypes
   InsufficientPermission
   InvalidCacheKey
   InvalidImplementation
   InvalidParameter
   InvalidRetryLogicEvaluation
   MaxRetryLimitReached
+}
+
+enum ErrorRecordComparisonType {
+  NoComparison
+  TypeCompare
+  ActivityCompare
+  CategoryCompare
+  IdCompare
+  AnyCompare
 }
 
 # Custom error class
@@ -17,6 +28,7 @@ class xUtilityException : System.Exception {
     [string] $message
   ) : base(("[{0}:{1}] {2}" -f $methodName, $category, $message)) {
     # Error message is handled by System.Exception
+    # TODO: Add telemetry here
   }
 }
 

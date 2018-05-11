@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-Version: **`v2.1.0`**
+Version: **`v2.1.1`**
 Release: **`4-LOM`**
 
 ```
@@ -72,6 +72,7 @@ Additional features will be added over time
 
 ````
 Version - Release - Description
+2.1.1   - 4-LOM   - Updated New-ConsoleColorSet and Out-ColorFormat, initial introduction of class based Retry policies
 2.1.0   - 4-LOM   - Minor fixes released for PowerShell gallery
 2.0.8   - 2-1B    - Created OS-independent functions for getting Temp and AppData folders
 2.0.7   - 2-1B    - Fixed pre-load script logic
