@@ -1,4 +1,18 @@
 $Script:defaultConfig = @{
+  'Module.PowerShell.LastCheckFile' = (. {
+    $appData = GetAppDataPath
+    $checkFile = Join-Path -Path $appData -ChildPath 'LastPSCheck.xml'
+    Write-Output $checkFile
+  })
+  'Module.PowerShell.CheckFile' = (. {
+    $appData = GetAppDataPath
+    $checkFile = Join-Path -Path $appData -ChildPath 'PSCheckTimeSpan.xml'
+    Write-Output $checkFile
+  })
+  'Module.PowerShell.Core.RequestHeaders' = @{'Accept' = 'application/vnd.github.v3+json'}
+  'Module.PowerShell.Core.LatestVersionSource' = 'https://api.github.com/repos/PowerShell/PowerShell/releases/latest'
+  'Module.PowerShell.UpdateCheckTimeSpan' = [TimeSpan] '30.00:00:00'
+  'Module.Config.HiveName' = 'xUtility'
   'Module.ExpiringCache.CacheType' = 'System.xUtility.ExpiringCache'
   'Module.InlineProgress.BarSize' = 4
   'Module.InlineProgress.Bars' = @('#', '*', '+', 'o')
@@ -13,6 +27,11 @@ $Script:defaultConfig = @{
   'Module.IsWindows' = . { isWindows }
   'Module.RetryBlock.PolicyTypeName' = 'System.xUtility.RetryPolicy'
   'Module.RetryBlock.RetryErrorId' = 'RetryLogicLimitReached'
+  'Module.Prompt.DisablePromptFile' = (. {
+    $appData = GetAppDataPath
+    $promptFile = Join-Path -Path $appData -ChildPath 'NoPromptFile.xml'
+    Write-Output $promptFile
+  })
   'Module.Prompt.FolderSegmentColor' = (. {
     $linuxOs = IsLinux
     if ($linuxOs -eq $false) {

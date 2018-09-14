@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-Version: **`v2.1.1`**
+Version: **`v2.1.2`**
 Release: **`4-LOM`**
 
 ```
@@ -55,7 +55,6 @@ PS> Import-Module -Name xUtility
 ````
 
 ## TO DO Items:
-- Leverage/integrate ConfigHive when possible
 - Report upstream logging/analytics from all cmdlets
 - Add post documentation for the multiple features
 - Repository and plugins for customizable prompts
@@ -72,6 +71,7 @@ Additional features will be added over time
 
 ````
 Version - Release - Description
+2.1.2   - 4-LOM   - Custom prompt is optional, integration with ConfigHive, checks for newer PS Versions
 2.1.1   - 4-LOM   - Updated New-ConsoleColorSet and Out-ColorFormat, initial introduction of class based Retry policies
 2.1.0   - 4-LOM   - Minor fixes released for PowerShell gallery
 2.0.8   - 2-1B    - Created OS-independent functions for getting Temp and AppData folders

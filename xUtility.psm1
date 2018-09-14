@@ -2,6 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 # Global variables
 $Script:ModuleHome = $PSScriptRoot
+$Script:IsConfigHiveOn = $false
 <# Expiring Cache Initialization #>
 $script:expiringCacheObjects = @{}
 
@@ -28,8 +29,9 @@ if ((GetConfig('Module.IsWindows')) -eq $false) {
   $preloadScripts += GetConfig('Module.WindowsOnlyScripts')
 }
 
-# When integrated with PsConfigHive module allows to skip custom prompt if Config module is already loaded
-if ((GetConfig('Module.NoCustomPrompt')) -eq $true) {
+# Control loading custom module or not
+$promptEnabled = IsPromptEnabled
+if ($false -eq $promptEnabled) {
   $preloadScripts += 'Set-Prompt.ps1'
 }
 
@@ -39,6 +41,9 @@ Get-ChildItem -Filter '*.ps1' -Recurse -Path $mainFolder | Where-Object {
 } | ForEach-Object {
   . ($_.FullName)
 }
+
+# Check for the latest version of PowerShell
+CheckLatestPS
 
 # Check the latest version
 $traceVersionFile  = GetConfig('Module.VersionTraceFile')

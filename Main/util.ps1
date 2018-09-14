@@ -1,6 +1,7 @@
 # Module Error Categories
 enum xUtilityErrorCategory {
   CacheKeyNotFound
+  DependencyNotFound
   DuplicateMatchingCriteria
   InconsistentMatchingTypes
   InsufficientPermission
@@ -28,6 +29,7 @@ class xUtilityException : System.Exception {
     [string] $message
   ) : base(("[{0}:{1}] {2}" -f $methodName, $category, $message)) {
     # Error message is handled by System.Exception
+    Get-PSCallStack
     # TODO: Add telemetry here
   }
 }
@@ -173,13 +175,112 @@ function GetConfig {
   )
 
   $ErrorActionPreference = 'Stop'
-  # TODO:
-  # Check if ConfigHive module is available
-  # If available check if module config is seeded, if not seed it with default values
-  # Use ConfigHive to retrieve data, otherwise use default configuration data
-  Write-Output $Script:defaultConfig[$Key]
+  # Check for ConfigHive enabled
+  $hiveName = $Script:defaultConfig['Module.Config.HiveName']
+  if ($Script:IsConfigHiveOn -eq $false) {
+    $hiveModule = Get-Module -Name 'ConfigHive'
+    if ($hiveModule -ne $null) {
+      $registeredHive = Get-RegisteredHives | Where-Object { $_ -eq $hiveName }
+      if ($registeredHive -ne $null) {
+        $Script:IsConfigHiveOn = $true
+      }
+    }
+  }
+
+  if ($Script:IsConfigHiveOn -eq $false) {
+    Write-Output $Script:defaultConfig[$Key]
+  }
+  else {
+    $val = Get-ConfigValue -Key $Key -HiveName $hiveName
+    Write-Output $val
+  }
 }
 
+function SetConfig {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    [string] $Key,
+
+    [Parameter(Mandatory)]
+    [ValidateNotNullOrEmpty()]
+    $Value
+  )
+
+  $ErrorActionPreference = 'Stop'
+  $hiveName = $Script:defaultConfig['Module.Config.HiveName']
+  if ($Script:IsConfigHiveOn -eq $false) {
+    $hiveModule = Get-Module -Name 'ConfigHive'
+    if ($hiveModule -ne $null) {
+      $registeredHive = Get-RegisteredHives | Where-Object { $_ -eq $hiveName }
+      if ($registeredHive -ne $null) {
+        $Script:IsConfigHiveOn = $true
+      }
+    }
+  }
+
+  if ($Script:IsConfigHiveOn -eq $false) {
+    $Script:defaultConfig[$Key] = $Value
+  }
+  else {
+    Set-ConfigValue -Key $Key -Value $Value -HiveName $hiveName -Level Origin
+  }
+}
+
+function IsPromptEnabled {
+  [CmdletBinding()]
+  param()
+
+  $ErrorActionPreference = 'Stop'
+  $promptFile = GetConfig('Module.Prompt.DisablePromptFile')
+  $fileExists = Test-Path $promptFile
+  if ($true -eq $fileExists) {
+    Write-Output $false
+  }
+  else {
+    Write-Output $true
+  }
+}
+
+function CheckLatestPS {
+  [CmdletBinding()]
+  param()
+
+  $ErrorActionPreference = 'Stop'
+  $checkSpanFile = GetConfig('Module.PowerShell.CheckFile')
+  $lastCheckFile = GetConfig('Module.PowerShell.LastCheckFile')
+  $spanCheck = [TimeSpan] (GetConfig('Module.PowerShell.UpdateCheckTimeSpan'))
+  if ((Test-Path $checkSpanFile)) {
+    $spanCheck = [TimeSpan] (Import-Clixml -Path $checkSpanFile)
+  }
+
+  $checkForVersion = $false
+  if (-not (Test-Path $lastCheckFile)) {
+    $checkForVersion = $true
+  }
+  else {
+    $lastCheckedTime = [System.DateTime] (Import-Clixml -Path $lastCheckFile)
+    $now = Get-Date
+    $checkedTimeSpan = $now - $lastCheckedTime
+    if ($checkedTimeSpan -gt $spanCheck) {
+      $checkForVersion = $true
+    }
+  }
+
+  if ($true -eq $checkForVersion) {
+    $versionComparison = Test-PowerShellVersion
+    $m = ("Current PowerShell Version: {0}" -f $versionComparison.Current)
+    Print -Message $m
+    $m = ("Latest  PowerShell Version: {0}" -f $versionComparison.Latest)
+    Print -Message $m
+    if ($versionComparison.Latest -gt $versionComparison.Current) {
+      Print -Message ('Consider updating to the latest PowerShell (v{0})' -f $versionComparison.Latest) -Accent Yellow
+    }
+
+    (Get-Date) | Export-Clixml -Path $lastCheckFile
+  }
+}
 
 # Expiring cache item trigger types
 enum ExpiringCacheItemType {
