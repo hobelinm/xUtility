@@ -177,6 +177,7 @@ function GetConfig {
   $ErrorActionPreference = 'Stop'
   # Check for ConfigHive enabled
   $hiveName = $Script:defaultConfig['Module.Config.HiveName']
+  <# TODO: Removed due to compatibility issues
   if ($Script:IsConfigHiveOn -eq $false) {
     $hiveModule = Get-Module -Name 'ConfigHive'
     if ($hiveModule -ne $null) {
@@ -186,6 +187,7 @@ function GetConfig {
       }
     }
   }
+  #>
 
   if ($Script:IsConfigHiveOn -eq $false) {
     Write-Output $Script:defaultConfig[$Key]

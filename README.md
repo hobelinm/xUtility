@@ -1,7 +1,7 @@
 # PsxUtility
 > Extended Utilities for PowerShell
 
-Version: **`v2.1.2`**
+Version: **`v2.1.3`**
 Release: **`4-LOM`**
 
 ```
@@ -71,6 +71,8 @@ Additional features will be added over time
 
 ````
 Version - Release - Description
+------- - ------- - ------------
+2.1.3   - 4-LOM   - Disabling ConfigHive to avoid compatibility issues
 2.1.2   - 4-LOM   - Custom prompt is optional, integration with ConfigHive, checks for newer PS Versions
 2.1.1   - 4-LOM   - Updated New-ConsoleColorSet and Out-ColorFormat, initial introduction of class based Retry policies
 2.1.0   - 4-LOM   - Minor fixes released for PowerShell gallery
